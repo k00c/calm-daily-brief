@@ -906,7 +906,26 @@ def build_spoken_segments(stories, generated_at_awst):
     separate segments — rather than one block of text — so a real silence
     gap can be inserted between stories instead of relying on punctuation."""
     date_str = generated_at_awst.strftime("%A, %d %B %Y")
-    segments = [f"Calm Daily Brief for {date_str}."]
+
+    topics = []
+    for story in stories:
+        if story.get("card_type") == "longform":
+            label = story.get("headline", "").strip() or "a long read"
+        else:
+            label = story.get("topic", "").strip() or "a story"
+        topics.append(label)
+
+    if len(topics) == 0:
+        rundown = ""
+    elif len(topics) == 1:
+        rundown = f" Today: {topics[0]}."
+    else:
+        rundown = f" Today: {', '.join(topics[:-1])}, and {topics[-1]}."
+
+    intro = (
+        f"Welcome to the Calm Daily Brief podcast, for {date_str}.{rundown}"
+    )
+    segments = [intro]
     for story in stories:
         if story.get("card_type") == "longform":
             headline = story.get("headline", "").strip() or "Long read"
@@ -918,7 +937,9 @@ def build_spoken_segments(stories, generated_at_awst):
             body = story.get("full_content", "").strip() or story.get("teaser", "").strip()
             text = f"{topic}. {body}"
         segments.append(text)
-    segments.append("That's everything for today.")
+    segments.append(
+        "That's everything for today. Thanks for listening to the Calm Daily Brief — see you tomorrow."
+    )
     return segments
 
 
