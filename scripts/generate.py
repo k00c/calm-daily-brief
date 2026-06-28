@@ -551,6 +551,7 @@ def render_html(stories, failures, generated_at_awst):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>Calm Daily Brief</title>
 <style>{SHARED_CSS}</style>
 </head>
@@ -590,6 +591,7 @@ def render_story_page(story, generated_at_awst):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>{topic} — Calm Daily Brief</title>
 <style>{SHARED_CSS}</style>
 </head>
@@ -621,6 +623,7 @@ def render_unavailable_html(failures, generated_at_awst):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>Calm Daily Brief</title>
 <style>
   body {{
