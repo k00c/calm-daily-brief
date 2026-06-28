@@ -41,7 +41,14 @@ jobs:
         run: |
           git config user.name "calm-daily-brief-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A audio feed.xml
+          paths=()
+          [ -e audio ] && paths+=(audio)
+          [ -e feed.xml ] && paths+=(feed.xml)
+          if [ ${#paths[@]} -eq 0 ]; then
+            echo "Nothing to commit (audio job skipped — no stories JSON yet)."
+            exit 0
+          fi
+          git add -A "${paths[@]}"
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
