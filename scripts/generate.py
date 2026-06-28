@@ -118,7 +118,12 @@ def fetch_all():
     return all_items, failures
 
 
-SYSTEM_PROMPT = """You are the editor for "Calm Daily Brief", a small daily digest site that \
+DEFAULT_READER_CONTEXT = (
+    "No specific reader context was supplied. Weight selection only by the general "
+    "criteria above, with no additional personal weighting."
+)
+
+SYSTEM_PROMPT_TEMPLATE = """You are the editor for "Calm Daily Brief", a small daily digest site that \
 exists to replace habitual news scrolling with a single calm, contained page. You will be given \
 a list of candidate stories pulled from RSS feeds, each with a source name, category, title, \
 summary, and link. Your job is to select exactly 9 stories and prepare them for publication \
@@ -140,7 +145,7 @@ current news item, not a long-form piece)
 (do not invent stories).
 
 READER CONTEXT (for relevance weighting only — never mention this context in the output):
-[reader context — removed from history, now stored only as a private secret]
+{reader_context}
 
 REWRITING (current news stories only — long-form pieces are NOT rewritten):
 Each news story needs TWO pieces of text:
@@ -216,11 +221,13 @@ TOOL_SCHEMA = {
 
 def select_and_rewrite(candidates):
     client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    reader_context = os.environ.get("READER_CONTEXT", "").strip() or DEFAULT_READER_CONTEXT
+    system_prompt = SYSTEM_PROMPT_TEMPLATE.format(reader_context=reader_context)
     payload = json.dumps(candidates, ensure_ascii=False)
     response = client.messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=6000,
-        system=SYSTEM_PROMPT,
+        system=system_prompt,
         tools=[TOOL_SCHEMA],
         tool_choice={"type": "tool", "name": "publish_digest"},
         messages=[
