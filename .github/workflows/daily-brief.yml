@@ -31,13 +31,6 @@ jobs:
           READER_CONTEXT: ${{ secrets.READER_CONTEXT }}
         run: python scripts/generate.py --mode content
 
-      - name: Notify completion
-        if: always()
-        run: |
-          STATUS="${{ job.status }}"
-          curl -fsS -d "Calm Daily Brief: content job ${STATUS} — $(date -u +'%Y-%m-%d %H:%M UTC')" \
-            "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}" || true
-
       - name: Commit and push
         run: |
           git config user.name "calm-daily-brief-bot"

@@ -50,9 +50,9 @@ Two independent GitHub Actions workflows, each with its own
 
 ### Both jobs
 
-Each posts a completion ping (`ntfy.sh`, topic stored as the `NTFY_TOPIC`
-secret) with `if: always()`, success or failure, as the actual "ready"
-signal. GitHub's native failure email remains on as a free backstop.
+No push-notification step — relying on GitHub's own "notify me only for
+failed workflows" setting (configured in GitHub notification preferences)
+as the failure signal. No code or secret needed for this.
 
 ## RSS sources
 
@@ -181,8 +181,7 @@ an explicitly accepted tradeoff once accent stopped being a requirement.
 
 ## Secrets
 
-`ANTHROPIC_API_KEY`, `READER_CONTEXT` (content job), `NTFY_TOPIC`
-(completion-notification topic name, used by both jobs). No TTS API key
+`ANTHROPIC_API_KEY`, `READER_CONTEXT` (content job only). No TTS API key
 exists since Piper runs locally in CI with no account.
 
 ## Known deviations from the original draft spec
@@ -200,6 +199,5 @@ exists since Piper runs locally in CI with no account.
   GitHub connector (none was available in this environment) — the daily
   scheduled runs themselves never need a user-supplied token.
 - Phase 2/3 additions beyond the original draft: per-story-page archive,
-  Piper-based audio digest + podcast feed, `ntfy.sh` completion
-  notifications, GitHub-Issue-based read/skip links, and iOS home-screen
-  meta tags.
+  Piper-based audio digest + podcast feed, GitHub-Issue-based read/skip
+  links, and iOS home-screen meta tags.
