@@ -50,7 +50,7 @@ FEEDS = {
 
 NEWS_RECENCY_DAYS = 3
 LONGFORM_RECENCY_DAYS = 21
-MAX_ITEMS_PER_SOURCE = 15
+MAX_ITEMS_PER_SOURCE = 10
 
 TAG_NEWS = {"awareness", "relevant"}
 
@@ -142,7 +142,7 @@ def fetch_feed(source_id, name, url, category, is_longform, failures):
                     "category": category,
                     "is_longform": is_longform,
                     "title": title,
-                    "summary": summary[:600],
+                    "summary": summary[:300],
                     "link": link,
                 }
             )
