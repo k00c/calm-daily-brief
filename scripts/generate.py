@@ -584,6 +584,14 @@ def render_html(stories, failures, generated_at_awst, link_prefix=""):
 
     cards_html = []
     for i, story in enumerate(stories):
+        # Ensure story is a dictionary; parse if it's a string
+        if isinstance(story, str):
+            try:
+                story = json.loads(story)
+            except (json.JSONDecodeError, TypeError):
+                failures.append(f"Story {i + 1}: invalid format, skipping")
+                continue
+        
         is_longform = story.get("card_type") == "longform"
         topic = html.escape(story.get("topic", ""))
         source = html.escape(story.get("source", ""))
