@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>Calm Daily Brief</title>
+    <link>https://k00c.github.io/calm-daily-brief/</link>
+    <description>A calm, daily spoken digest. Unlisted — not submitted to any podcast directory.</description>
+    <language>en</language>
+    <itunes:explicit>false</itunes:explicit>
+    <item>
+      <title>Calm Daily Brief — 2026-06-28</title>
+      <description>The day's calm digest, read aloud.</description>
+      <pubDate>Sun, 28 Jun 2026 04:30:00 +0800</pubDate>
+      <guid isPermaLink="false">calm-daily-brief-2026-06-28</guid>
+      <enclosure url="https://k00c.github.io/calm-daily-brief/audio/2026-06-28.mp3" length="2260163" type="audio/mpeg" />
+    </item>
+  </channel>
+</rss>
