@@ -45,6 +45,7 @@ TAG_NEWS = {"awareness", "relevant"}
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTPUT_PATH = os.path.join(REPO_ROOT, "index.html")
+STORIES_DIR = os.path.join(REPO_ROOT, "stories")
 
 
 def strip_html(raw):
@@ -141,22 +142,29 @@ READER CONTEXT (for relevance weighting only — never mention this context in t
 [reader context — removed from history, now stored only as a private secret]
 
 REWRITING (current news stories only — long-form pieces are NOT rewritten):
-- Rewrite each news story in 3-4 calm, declarative sentences based on its title and summary.
+Each news story needs TWO pieces of text:
+1. "teaser" — exactly one calm, factual sentence for the front-page card. No clickbait, no \
+cliffhangers, no "find out what happens" framing — just the core fact, stated plainly.
+2. "full_content" — 3-4 short calm paragraphs (roughly 150-220 words total) for the story's own \
+page, expanding on the teaser with the relevant factual detail from the title and summary \
+provided.
+Both the teaser and full_content must follow these rules:
 - Strip all threat-amplifying language: crisis, chaos, slams, explosive, shocking, alarming, \
 fears, warns, devastating, bombshell, and similar words.
 - Replace passive-catastrophe framing with factual description.
 - Do not include conflict casualties or graphic detail, crime specifics, political outrage \
 framing, or economic fear framing. If a candidate story is primarily about one of these, do not \
 select it — choose a different candidate instead.
-- End the editorial judgement with one tag: "awareness" (no action needed) or "relevant" (worth \
-following). Long-form pieces get no tag (use null).
+- End full_content with one tag, stated separately in the "tag" field: "awareness" (no action \
+needed) or "relevant" (worth following). Long-form pieces get no tag (use null).
 - Give each story a single-word (or short, e.g. two-word) topic label, e.g. Housing, Science, \
 Indonesia, Perth, Policy.
 
 LONG-FORM PIECES:
 - Use the original headline, the original summary/standfirst (lightly trimmed for length if \
 needed, but not rewritten in tone), the source name, and the link only. Do not apply the \
-rewriting rules above to these.
+rewriting rules above to these. Long-form pieces do not need a teaser or full_content — leave \
+those fields empty.
 
 Never embed any personal information, names, file paths, or usernames in your output. Output \
 only what the tool schema allows."""
@@ -182,13 +190,21 @@ TOOL_SCHEMA = {
                         },
                         "summary": {
                             "type": "string",
-                            "description": "Rewritten 3-4 sentence summary for news, or original standfirst for longform",
+                            "description": "Original standfirst, longform cards only (leave empty for news)",
+                        },
+                        "teaser": {
+                            "type": "string",
+                            "description": "One calm factual sentence for the front-page card, news cards only",
+                        },
+                        "full_content": {
+                            "type": "string",
+                            "description": "3-4 calm paragraphs (~150-220 words) for the story's own page, news cards only",
                         },
                         "source": {"type": "string"},
                         "tag": {"type": ["string", "null"], "enum": ["awareness", "relevant", None]},
                         "link": {"type": "string"},
                     },
-                    "required": ["topic", "card_type", "summary", "source", "link"],
+                    "required": ["topic", "card_type", "source", "link"],
                 },
             }
         },
@@ -201,8 +217,8 @@ def select_and_rewrite(candidates):
     client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     payload = json.dumps(candidates, ensure_ascii=False)
     response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=4000,
+        model="claude-haiku-4-5-20251001",
+        max_tokens=6000,
         system=SYSTEM_PROMPT,
         tools=[TOOL_SCHEMA],
         tool_choice={"type": "tool", "name": "publish_digest"},
@@ -219,34 +235,190 @@ def select_and_rewrite(candidates):
     raise RuntimeError("model did not return a publish_digest tool call")
 
 
+SHARED_CSS = """
+  :root {
+    --bg: #faf9f6;
+    --card-bg: #ffffff;
+    --longform-bg: #f5f3ee;
+    --text: #2b2b28;
+    --muted: #767066;
+    --accent: #8a8170;
+    --border: #e4e1d8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  header {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 48px 24px 24px;
+  }
+  header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 6px;
+    letter-spacing: 0.01em;
+  }
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px 64px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  @media (min-width: 720px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+  }
+  .card {
+    display: block;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .card.longform {
+    background: var(--longform-bg);
+    border-left: 3px solid var(--accent);
+  }
+  .card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .topic {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+  .longread-badge {
+    font-size: 0.7rem;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px 9px;
+  }
+  .headline {
+    font-weight: 600;
+    margin: 0 0 8px;
+    font-size: 1.02rem;
+  }
+  .summary {
+    margin: 0 0 14px;
+    font-size: 0.96rem;
+    color: var(--text);
+  }
+  .card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .tag {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .story-page main {
+    max-width: 640px;
+  }
+  .story-page .back-link {
+    display: inline-block;
+    margin-bottom: 28px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+  }
+  .story-page h1.story-headline {
+    font-size: 1.3rem;
+    margin: 0 0 18px;
+  }
+  .story-page .body-text p {
+    margin: 0 0 14px;
+    font-size: 1rem;
+  }
+  .story-page .story-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .story-page .original-link {
+    display: inline-block;
+    margin-top: 22px;
+    font-size: 0.92rem;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+  }
+"""
+
+
+def slugify(text, fallback):
+    slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    return slug or fallback
+
+
 def render_html(stories, failures, generated_at_awst):
     date_str = generated_at_awst.strftime("%A, %d %B %Y")
     count = len(stories)
 
     cards_html = []
-    for story in stories:
+    for i, story in enumerate(stories):
         is_longform = story.get("card_type") == "longform"
         topic = html.escape(story.get("topic", ""))
         source = html.escape(story.get("source", ""))
-        link = html.escape(story.get("link", "#"), quote=True)
-        summary = html.escape(story.get("summary", ""))
-        headline = html.escape(story.get("headline", "")) if story.get("headline") else ""
         tag = story.get("tag")
 
         card_class = "card longform" if is_longform else "card"
         badge = '<span class="longread-badge">Long read</span>' if is_longform else ""
         tag_html = f'<span class="tag tag-{tag}">[{tag}]</span>' if tag in TAG_NEWS else ""
-        headline_html = f'<p class="headline">{headline}</p>' if headline else ""
+
+        if is_longform:
+            link = html.escape(story.get("link", "#"), quote=True)
+            target_attrs = 'target="_blank" rel="noopener noreferrer"'
+            headline = html.escape(story.get("headline", ""))
+            headline_html = f'<p class="headline">{headline}</p>' if headline else ""
+            body = html.escape(story.get("summary", ""))
+        else:
+            link = f"stories/story-{i + 1}.html"
+            target_attrs = ""
+            headline_html = ""
+            body = html.escape(story.get("teaser", ""))
 
         cards_html.append(
             f"""
-        <a class="{card_class}" href="{link}" target="_blank" rel="noopener noreferrer">
+        <a class="{card_class}" href="{link}" {target_attrs}>
           <div class="card-top">
             <span class="topic">{topic}</span>
             {badge}
           </div>
           {headline_html}
-          <p class="summary">{summary}</p>
+          <p class="summary">{body}</p>
           <div class="card-bottom">
             <span class="source">{source}</span>
             {tag_html}
@@ -265,109 +437,7 @@ def render_html(stories, failures, generated_at_awst):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Calm Daily Brief</title>
-<style>
-  :root {{
-    --bg: #faf9f6;
-    --card-bg: #ffffff;
-    --longform-bg: #f5f3ee;
-    --text: #2b2b28;
-    --muted: #767066;
-    --accent: #8a8170;
-    --border: #e4e1d8;
-  }}
-  * {{ box-sizing: border-box; }}
-  body {{
-    margin: 0;
-    padding: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-  }}
-  header {{
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 48px 24px 24px;
-  }}
-  header h1 {{
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 6px;
-    letter-spacing: 0.01em;
-  }}
-  header p {{
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.95rem;
-  }}
-  main {{
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 0 24px 64px;
-  }}
-  .grid {{
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }}
-  @media (min-width: 720px) {{
-    .grid {{ grid-template-columns: 1fr 1fr; }}
-  }}
-  .card {{
-    display: block;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 22px;
-    text-decoration: none;
-    color: var(--text);
-  }}
-  .card.longform {{
-    background: var(--longform-bg);
-    border-left: 3px solid var(--accent);
-  }}
-  .card-top {{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }}
-  .topic {{
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--accent);
-  }}
-  .longread-badge {{
-    font-size: 0.7rem;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 2px 9px;
-  }}
-  .headline {{
-    font-weight: 600;
-    margin: 0 0 8px;
-    font-size: 1.02rem;
-  }}
-  .summary {{
-    margin: 0 0 14px;
-    font-size: 0.96rem;
-    color: var(--text);
-  }}
-  .card-bottom {{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.82rem;
-    color: var(--muted);
-  }}
-  .tag {{
-    font-size: 0.78rem;
-    color: var(--muted);
-  }}
-</style>
+<style>{SHARED_CSS}</style>
 </head>
 <body>
 <header>
@@ -380,6 +450,44 @@ def render_html(stories, failures, generated_at_awst):
   </div>
 </main>
 {failures_comment}</body>
+</html>
+"""
+
+
+def render_story_page(story, generated_at_awst):
+    date_str = generated_at_awst.strftime("%A, %d %B %Y")
+    topic = html.escape(story.get("topic", ""))
+    source = html.escape(story.get("source", ""))
+    link = html.escape(story.get("link", "#"), quote=True)
+    tag = story.get("tag")
+    tag_html = f'<span class="tag tag-{tag}">[{tag}]</span>' if tag in TAG_NEWS else ""
+
+    paragraphs = [p.strip() for p in re.split(r"\n+", story.get("full_content", "")) if p.strip()]
+    body_html = "".join(f"<p>{html.escape(p)}</p>" for p in paragraphs)
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{topic} — Calm Daily Brief</title>
+<style>{SHARED_CSS}</style>
+</head>
+<body class="story-page">
+<main>
+  <a class="back-link" href="../index.html">&larr; Back to Calm Daily Brief</a>
+  <span class="topic">{topic}</span>
+  <div class="body-text">
+    {body_html}
+  </div>
+  <div class="story-meta">
+    <span class="source">{source}</span>
+    {tag_html}
+  </div>
+  <a class="original-link" href="{link}" target="_blank" rel="noopener noreferrer">Read the original story &rarr;</a>
+  <p style="color: var(--muted); font-size: 0.8rem; margin-top: 28px;">{date_str}</p>
+</main>
+</body>
 </html>
 """
 
@@ -419,12 +527,22 @@ Feed fetch issues for {date_str}:
 """
 
 
+def reset_stories_dir():
+    if os.path.isdir(STORIES_DIR):
+        for name in os.listdir(STORIES_DIR):
+            if name.endswith(".html"):
+                os.remove(os.path.join(STORIES_DIR, name))
+    else:
+        os.makedirs(STORIES_DIR, exist_ok=True)
+
+
 def main():
     candidates, failures = fetch_all()
     generated_at_awst = datetime.now(timezone.utc) + timedelta(hours=8)
 
     if not candidates:
         output = render_unavailable_html(failures, generated_at_awst)
+        reset_stories_dir()
     else:
         try:
             stories = select_and_rewrite(candidates)
@@ -434,8 +552,17 @@ def main():
 
         if not stories:
             output = render_unavailable_html(failures, generated_at_awst)
+            reset_stories_dir()
         else:
             output = render_html(stories, failures, generated_at_awst)
+            reset_stories_dir()
+            for i, story in enumerate(stories):
+                if story.get("card_type") == "longform":
+                    continue
+                page = render_story_page(story, generated_at_awst)
+                path = os.path.join(STORIES_DIR, f"story-{i + 1}.html")
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(page)
 
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         f.write(output)
