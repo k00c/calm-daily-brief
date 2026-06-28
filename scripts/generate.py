@@ -237,60 +237,88 @@ def select_and_rewrite(candidates):
 
 SHARED_CSS = """
   :root {
-    --bg: #faf9f6;
-    --card-bg: #ffffff;
-    --longform-bg: #f5f3ee;
-    --text: #2b2b28;
-    --muted: #767066;
-    --accent: #8a8170;
-    --border: #e4e1d8;
+    --bg: #f6f4ef;
+    --card-bg: #fffefc;
+    --longform-bg: #f0ebe1;
+    --text: #2c2a26;
+    --muted: #8a8377;
+    --muted-2: #aba493;
+    --accent: #7d7256;
+    --accent-soft: #ece6d8;
+    --border: #e6e1d4;
+    --shadow: 0 1px 2px rgba(40, 35, 20, 0.04), 0 4px 14px rgba(40, 35, 20, 0.05);
+    --shadow-hover: 0 2px 4px rgba(40, 35, 20, 0.05), 0 10px 24px rgba(40, 35, 20, 0.08);
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     padding: 0;
     background: var(--bg);
+    background-image: radial-gradient(circle at 20% 0%, rgba(125, 114, 86, 0.05), transparent 55%);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
   header {
-    max-width: 880px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 48px 24px 24px;
+    padding: 56px 24px 28px;
+  }
+  header .kicker {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
   }
   header h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 6px;
-    letter-spacing: 0.01em;
+    font-size: 1.7rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    color: var(--text);
   }
-  header p {
+  header p.meta {
     margin: 0;
     color: var(--muted);
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+  }
+  header .rule {
+    margin-top: 26px;
+    height: 1px;
+    background: linear-gradient(to right, var(--border), transparent 85%);
   }
   main {
-    max-width: 880px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 0 24px 64px;
+    padding: 8px 24px 72px;
   }
   .grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 18px;
   }
   @media (min-width: 720px) {
-    .grid { grid-template-columns: 1fr 1fr; }
+    .grid { grid-template-columns: 1fr 1fr; gap: 20px; }
   }
   .card {
-    display: block;
+    display: flex;
+    flex-direction: column;
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 22px;
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    padding: 24px;
     text-decoration: none;
     color: var(--text);
+    transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+    border-color: var(--muted-2);
   }
   .card.longform {
     background: var(--longform-bg);
@@ -300,68 +328,94 @@ SHARED_CSS = """
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
   .topic {
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.72rem;
+    font-weight: 650;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     color: var(--accent);
   }
   .longread-badge {
-    font-size: 0.7rem;
-    color: var(--muted);
-    border: 1px solid var(--border);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--accent);
+    background: rgba(125, 114, 86, 0.1);
     border-radius: 999px;
-    padding: 2px 9px;
+    padding: 3px 10px;
   }
   .headline {
     font-weight: 600;
     margin: 0 0 8px;
-    font-size: 1.02rem;
+    font-size: 1.04rem;
+    letter-spacing: -0.005em;
   }
   .summary {
-    margin: 0 0 14px;
+    margin: 0 0 16px;
     font-size: 0.96rem;
     color: var(--text);
+    flex-grow: 1;
   }
   .card-bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--muted);
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
   }
   .tag {
-    font-size: 0.78rem;
-    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 3px 10px;
   }
   .story-page main {
-    max-width: 640px;
+    max-width: 620px;
+    padding-top: 16px;
   }
   .story-page .back-link {
-    display: inline-block;
-    margin-bottom: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 32px;
     color: var(--muted);
     text-decoration: none;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
+    transition: color 0.15s ease;
   }
-  .story-page h1.story-headline {
-    font-size: 1.3rem;
-    margin: 0 0 18px;
+  .story-page .back-link:hover {
+    color: var(--accent);
+  }
+  .story-page .topic {
+    display: block;
+    margin-bottom: 14px;
+  }
+  .story-page .body-text {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    padding: 28px;
   }
   .story-page .body-text p {
     margin: 0 0 14px;
-    font-size: 1rem;
+    font-size: 1.04rem;
+  }
+  .story-page .body-text p:last-child {
+    margin-bottom: 0;
   }
   .story-page .story-meta {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 24px;
-    padding-top: 18px;
-    border-top: 1px solid var(--border);
+    margin-top: 20px;
     font-size: 0.85rem;
     color: var(--muted);
   }
@@ -369,11 +423,22 @@ SHARED_CSS = """
     display: inline-block;
     margin-top: 22px;
     font-size: 0.92rem;
+    font-weight: 600;
     color: var(--accent);
     text-decoration: none;
-    border: 1px solid var(--border);
+    background: var(--accent-soft);
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: 11px 18px;
+    transition: background 0.15s ease;
+  }
+  .story-page .original-link:hover {
+    background: #e2dac5;
+  }
+  .footer-note {
+    margin-top: 48px;
+    text-align: center;
+    color: var(--muted-2);
+    font-size: 0.78rem;
   }
 """
 
@@ -385,6 +450,7 @@ def slugify(text, fallback):
 
 def render_html(stories, failures, generated_at_awst):
     date_str = generated_at_awst.strftime("%A, %d %B %Y")
+    time_str = generated_at_awst.strftime("%-I:%M%p").lower() + " AWST"
     count = len(stories)
 
     cards_html = []
@@ -396,7 +462,7 @@ def render_html(stories, failures, generated_at_awst):
 
         card_class = "card longform" if is_longform else "card"
         badge = '<span class="longread-badge">Long read</span>' if is_longform else ""
-        tag_html = f'<span class="tag tag-{tag}">[{tag}]</span>' if tag in TAG_NEWS else ""
+        tag_html = f'<span class="tag tag-{tag}">{tag}</span>' if tag in TAG_NEWS else ""
 
         if is_longform:
             link = html.escape(story.get("link", "#"), quote=True)
@@ -441,13 +507,16 @@ def render_html(stories, failures, generated_at_awst):
 </head>
 <body>
 <header>
+  <p class="kicker">Today's brief</p>
   <h1>Calm Daily Brief</h1>
-  <p>{date_str} &middot; {count} stories</p>
+  <p class="meta">{date_str} &middot; generated {time_str} &middot; {count} stories</p>
+  <div class="rule"></div>
 </header>
 <main>
   <div class="grid">
     {''.join(cards_html)}
   </div>
+  <p class="footer-note">That's everything for today.</p>
 </main>
 {failures_comment}</body>
 </html>
@@ -460,7 +529,7 @@ def render_story_page(story, generated_at_awst):
     source = html.escape(story.get("source", ""))
     link = html.escape(story.get("link", "#"), quote=True)
     tag = story.get("tag")
-    tag_html = f'<span class="tag tag-{tag}">[{tag}]</span>' if tag in TAG_NEWS else ""
+    tag_html = f'<span class="tag tag-{tag}">{tag}</span>' if tag in TAG_NEWS else ""
 
     paragraphs = [p.strip() for p in re.split(r"\n+", story.get("full_content", "")) if p.strip()]
     body_html = "".join(f"<p>{html.escape(p)}</p>" for p in paragraphs)
@@ -485,7 +554,7 @@ def render_story_page(story, generated_at_awst):
     {tag_html}
   </div>
   <a class="original-link" href="{link}" target="_blank" rel="noopener noreferrer">Read the original story &rarr;</a>
-  <p style="color: var(--muted); font-size: 0.8rem; margin-top: 28px;">{date_str}</p>
+  <p class="footer-note" style="margin-top: 40px;">{date_str}</p>
 </main>
 </body>
 </html>
