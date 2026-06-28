@@ -1,9 +1,10 @@
-name: Daily Calm Brief
+name: Daily Calm Brief — Content
 
 on:
   schedule:
-    # 8pm UTC = 4am AWST (UTC+8)
-    - cron: "0 20 * * *"
+    # 4pm UTC = midnight AWST (UTC+8) — hours of slack before the audio job
+    # and before the reader wakes, so scheduler delay here is harmless.
+    - cron: "47 16 * * *"
   workflow_dispatch: {}
 
 permissions:
@@ -28,16 +29,23 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           READER_CONTEXT: ${{ secrets.READER_CONTEXT }}
-        run: python scripts/generate.py
+        run: python scripts/generate.py --mode content
+
+      - name: Notify completion
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          curl -fsS -d "Calm Daily Brief: content job ${STATUS} — $(date -u +'%Y-%m-%d %H:%M UTC')" \
+            "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}" || true
 
       - name: Commit and push
         run: |
           git config user.name "calm-daily-brief-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A index.html stories
+          git add -A index.html stories archive data
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "Daily update — $(date -u +'%Y-%m-%d')"
+            git commit -m "Daily content update — $(date -u +'%Y-%m-%d')"
             git push
           fi

@@ -1,0 +1,57 @@
+name: Daily Calm Brief — Audio
+
+on:
+  schedule:
+    # 8:17pm UTC = 4:17am AWST (UTC+8) — off the top-of-hour contention slot.
+    - cron: "17 20 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install piper-tts
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      - name: Download Piper voice model
+        run: |
+          mkdir -p voices
+          python3 -m piper.download_voices en_US-lessac-medium --download-dir voices
+
+      - name: Generate audio
+        env:
+          PIPER_MODEL_PATH: voices/en_US-lessac-medium.onnx
+          PIPER_CONFIG_PATH: voices/en_US-lessac-medium.onnx.json
+        run: python scripts/generate.py --mode audio
+
+      - name: Notify completion
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          curl -fsS -d "Calm Daily Brief: audio job ${STATUS} — $(date -u +'%Y-%m-%d %H:%M UTC')" \
+            "https://ntfy.sh/${{ secrets.NTFY_TOPIC }}" || true
+
+      - name: Commit and push
+        run: |
+          git config user.name "calm-daily-brief-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A audio feed.xml
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Daily audio update — $(date -u +'%Y-%m-%d')"
+            git push
+          fi

@@ -2,27 +2,40 @@
 """
 Calm Daily Brief — daily digest generator.
 
-Fetches RSS feeds, selects 9 stories per the editorial rules below, asks
-Claude to rewrite the current-news stories in a calm, declarative tone,
-and renders a single static index.html.
+Two modes, selected with --mode:
+
+  content (default) — fetches RSS, asks Claude to select/rewrite 9 stories,
+    renders index.html + stories/, persists data/stories-YYYY-MM-DD.json,
+    and writes a dated copy into archive/.
+
+  audio — reads back that day's data/stories-YYYY-MM-DD.json (no
+    re-selection), builds a spoken script, synthesizes it with Piper TTS,
+    encodes to MP3 via ffmpeg, writes audio/YYYY-MM-DD.mp3, and updates the
+    static podcast feed.xml (with bounded retention).
 
 No personal information is read, used, or embedded anywhere in this
 script or its output. Output is limited to: site name, date, story
 count, topic labels, summaries, source names, tags, and links.
 """
 
+import argparse
 import html
 import json
 import os
 import random
 import re
+import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
+from urllib.parse import quote
+from xml.sax.saxutils import escape as xml_escape
 
 import feedparser
 from anthropic import Anthropic
 
 UA = "Mozilla/5.0 (compatible; CalmDailyBriefBot/1.0; +https://github.com/)"
+REPO_SLUG = "k00c/calm-daily-brief"
+SITE_BASE_URL = "https://k00c.github.io/calm-daily-brief"
 
 # source_id: (display_name, url, category, is_longform)
 FEEDS = {
@@ -47,6 +60,41 @@ TAG_NEWS = {"awareness", "relevant"}
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTPUT_PATH = os.path.join(REPO_ROOT, "index.html")
 STORIES_DIR = os.path.join(REPO_ROOT, "stories")
+DATA_DIR = os.path.join(REPO_ROOT, "data")
+ARCHIVE_DIR = os.path.join(REPO_ROOT, "archive")
+AUDIO_DIR = os.path.join(REPO_ROOT, "audio")
+FEED_PATH = os.path.join(REPO_ROOT, "feed.xml")
+
+AUDIO_RETENTION_DAYS = 60
+
+HEAD_EXTRA = """<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Calm Brief">
+<link rel="apple-touch-icon" href="/calm-daily-brief/apple-touch-icon.png">"""
+
+
+def awst_now():
+    return datetime.now(timezone.utc) + timedelta(hours=8)
+
+
+def date_key(dt):
+    return dt.strftime("%Y-%m-%d")
+
+
+def issue_link(action, label, story, date_str):
+    """Pre-filled GitHub Issue link — the no-backend read/skip signal."""
+    title = f"{action}: {label} — {date_str}"
+    body_lines = [
+        f"Date: {date_str}",
+        f"Topic: {story.get('topic', '')}",
+        f"Source: {story.get('source', '')}",
+        f"Link: {story.get('link', '')}",
+    ]
+    body = "\n".join(body_lines)
+    return (
+        f"https://github.com/{REPO_SLUG}/issues/new"
+        f"?title={quote(title)}&body={quote(body)}&labels={quote(action.lower())}"
+    )
 
 
 def strip_html(raw):
@@ -392,6 +440,29 @@ SHARED_CSS = """
     border-radius: 999px;
     padding: 3px 10px;
   }
+  .feedback-links {
+    display: flex;
+    gap: 10px;
+  }
+  .feedback-links a {
+    font-size: 0.74rem;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--muted-2);
+  }
+  .feedback-links a:hover {
+    color: var(--accent);
+  }
+  .archive-note {
+    margin-top: 36px;
+    text-align: center;
+    font-size: 0.82rem;
+  }
+  .archive-note a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--accent);
+  }
   .story-page main {
     max-width: 620px;
     padding-top: 16px;
@@ -503,11 +574,12 @@ role="img" aria-label="A soft abstract gradient, for visual calm only">
 </svg>"""
 
 
-def render_html(stories, failures, generated_at_awst):
+def render_html(stories, failures, generated_at_awst, link_prefix=""):
     date_str = generated_at_awst.strftime("%A, %d %B %Y")
+    date_key_str = date_key(generated_at_awst)
     time_str = generated_at_awst.strftime("%-I:%M%p").lower() + " AWST"
     count = len(stories)
-    banner_svg = render_banner_svg(generated_at_awst.strftime("%Y-%m-%d"))
+    banner_svg = render_banner_svg(date_key_str)
 
     cards_html = []
     for i, story in enumerate(stories):
@@ -527,25 +599,38 @@ def render_html(stories, failures, generated_at_awst):
             headline_html = f'<p class="headline">{headline}</p>' if headline else ""
             body = html.escape(story.get("summary", ""))
         else:
-            link = f"stories/story-{i + 1}.html"
+            link = f"{link_prefix}stories/story-{i + 1}.html"
             target_attrs = ""
             headline_html = ""
             body = html.escape(story.get("teaser", ""))
 
+        label = story.get("headline") or story.get("topic", "story")
+        read_link = html.escape(issue_link("Read", label, story, date_key_str), quote=True)
+        skip_link = html.escape(issue_link("Skip", label, story, date_key_str), quote=True)
+        feedback_html = (
+            f'<span class="feedback-links">'
+            f'<a href="{read_link}" target="_blank" rel="noopener noreferrer">mark read</a>'
+            f'<a href="{skip_link}" target="_blank" rel="noopener noreferrer">skip</a>'
+            f"</span>"
+        )
+
         cards_html.append(
             f"""
-        <a class="{card_class}" href="{link}" {target_attrs}>
+        <div class="{card_class}">
+        <a style="text-decoration:none;color:inherit;display:block;" href="{link}" {target_attrs}>
           <div class="card-top">
             <span class="topic">{topic}</span>
             {badge}
           </div>
           {headline_html}
           <p class="summary">{body}</p>
+        </a>
           <div class="card-bottom">
             <span class="source">{source}</span>
             {tag_html}
+            {feedback_html}
           </div>
-        </a>"""
+        </div>"""
         )
 
     failures_comment = ""
@@ -559,6 +644,7 @@ def render_html(stories, failures, generated_at_awst):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+{HEAD_EXTRA}
 <title>Calm Daily Brief</title>
 <style>{SHARED_CSS}</style>
 </head>
@@ -575,20 +661,31 @@ def render_html(stories, failures, generated_at_awst):
     {''.join(cards_html)}
   </div>
   <p class="footer-note">That's everything for today.</p>
+  <p class="archive-note"><a href="{link_prefix}archive/index.html">Past days</a> &middot; <a href="{link_prefix}feed.xml">Audio feed</a></p>
 </main>
 {failures_comment}</body>
 </html>
 """
 
 
-def render_story_page(story, generated_at_awst):
+def render_story_page(story, generated_at_awst, index, date_key_str, back_href="../index.html"):
     date_str = generated_at_awst.strftime("%A, %d %B %Y")
-    banner_svg = render_banner_svg(generated_at_awst.strftime("%Y-%m-%d") + "-story")
+    banner_svg = render_banner_svg(date_key_str + "-story")
     topic = html.escape(story.get("topic", ""))
     source = html.escape(story.get("source", ""))
     link = html.escape(story.get("link", "#"), quote=True)
     tag = story.get("tag")
     tag_html = f'<span class="tag tag-{tag}">{tag}</span>' if tag in TAG_NEWS else ""
+
+    label = story.get("headline") or story.get("topic", "story")
+    read_link = html.escape(issue_link("Read", label, story, date_key_str), quote=True)
+    skip_link = html.escape(issue_link("Skip", label, story, date_key_str), quote=True)
+    feedback_html = (
+        f'<span class="feedback-links">'
+        f'<a href="{read_link}" target="_blank" rel="noopener noreferrer">mark read</a>'
+        f'<a href="{skip_link}" target="_blank" rel="noopener noreferrer">skip</a>'
+        f"</span>"
+    )
 
     paragraphs = [p.strip() for p in re.split(r"\n+", story.get("full_content", "")) if p.strip()]
     body_html = "".join(f"<p>{html.escape(p)}</p>" for p in paragraphs)
@@ -599,13 +696,14 @@ def render_story_page(story, generated_at_awst):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+{HEAD_EXTRA}
 <title>{topic} — Calm Daily Brief</title>
 <style>{SHARED_CSS}</style>
 </head>
 <body class="story-page">
 <main>
   {banner_svg}
-  <a class="back-link" href="../index.html">&larr; Back to Calm Daily Brief</a>
+  <a class="back-link" href="{back_href}">&larr; Back to Calm Daily Brief</a>
   <span class="topic">{topic}</span>
   <div class="body-text">
     {body_html}
@@ -613,6 +711,7 @@ def render_story_page(story, generated_at_awst):
   <div class="story-meta">
     <span class="source">{source}</span>
     {tag_html}
+    {feedback_html}
   </div>
   <a class="original-link" href="{link}" target="_blank" rel="noopener noreferrer">Read the original story &rarr;</a>
   <p class="footer-note" style="margin-top: 40px;">{date_str}</p>
@@ -631,6 +730,7 @@ def render_unavailable_html(failures, generated_at_awst):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+{HEAD_EXTRA}
 <title>Calm Daily Brief</title>
 <style>
   body {{
@@ -667,13 +767,87 @@ def reset_stories_dir():
         os.makedirs(STORIES_DIR, exist_ok=True)
 
 
-def main():
+def write_archive_day(stories, generated_at_awst, date_key_str):
+    """Write a dated, standalone copy into archive/YYYY-MM-DD/ — kept
+    indefinitely (small HTML/text only)."""
+    day_dir = os.path.join(ARCHIVE_DIR, date_key_str)
+    day_stories_dir = os.path.join(day_dir, "stories")
+    os.makedirs(day_stories_dir, exist_ok=True)
+
+    index_html = render_html(stories, [], generated_at_awst, link_prefix="../../")
+    with open(os.path.join(day_dir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(index_html)
+
+    for i, story in enumerate(stories):
+        if story.get("card_type") == "longform":
+            continue
+        page = render_story_page(
+            story, generated_at_awst, i, date_key_str, back_href="../index.html"
+        )
+        with open(os.path.join(day_stories_dir, f"story-{i + 1}.html"), "w", encoding="utf-8") as f:
+            f.write(page)
+
+    rebuild_archive_index()
+
+
+def rebuild_archive_index():
+    os.makedirs(ARCHIVE_DIR, exist_ok=True)
+    days = sorted(
+        (
+            name
+            for name in os.listdir(ARCHIVE_DIR)
+            if os.path.isdir(os.path.join(ARCHIVE_DIR, name)) and re.match(r"^\d{4}-\d{2}-\d{2}$", name)
+        ),
+        reverse=True,
+    )
+    items = "\n".join(f'    <li><a href="{d}/index.html">{d}</a></li>' for d in days)
+    output = f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+{HEAD_EXTRA}
+<title>Archive — Calm Daily Brief</title>
+<style>{SHARED_CSS}</style>
+</head>
+<body class="story-page">
+<main>
+  <a class="back-link" href="../index.html">&larr; Back to Calm Daily Brief</a>
+  <h1>Past days</h1>
+  <ul style="list-style:none;padding:0;line-height:2.1;">
+{items}
+  </ul>
+</main>
+</body>
+</html>
+"""
+    with open(os.path.join(ARCHIVE_DIR, "index.html"), "w", encoding="utf-8") as f:
+        f.write(output)
+
+
+def persist_stories_json(stories, failures, generated_at_awst, date_key_str):
+    os.makedirs(DATA_DIR, exist_ok=True)
+    payload = {
+        "date": date_key_str,
+        "generated_at": generated_at_awst.isoformat(),
+        "stories": stories,
+        "failures": failures,
+    }
+    path = os.path.join(DATA_DIR, f"stories-{date_key_str}.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+
+
+def run_content():
     candidates, failures = fetch_all()
-    generated_at_awst = datetime.now(timezone.utc) + timedelta(hours=8)
+    generated_at_awst = awst_now()
+    date_key_str = date_key(generated_at_awst)
 
     if not candidates:
         output = render_unavailable_html(failures, generated_at_awst)
         reset_stories_dir()
+        stories = []
     else:
         try:
             stories = select_and_rewrite(candidates)
@@ -690,7 +864,7 @@ def main():
             for i, story in enumerate(stories):
                 if story.get("card_type") == "longform":
                     continue
-                page = render_story_page(story, generated_at_awst)
+                page = render_story_page(story, generated_at_awst, i, date_key_str)
                 path = os.path.join(STORIES_DIR, f"story-{i + 1}.html")
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(page)
@@ -698,10 +872,191 @@ def main():
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         f.write(output)
 
+    if stories:
+        persist_stories_json(stories, failures, generated_at_awst, date_key_str)
+        write_archive_day(stories, generated_at_awst, date_key_str)
+
     if failures:
         print("Feed/generation issues:", file=sys.stderr)
         for f_ in failures:
             print(f" - {f_}", file=sys.stderr)
+
+
+# ---------------------------------------------------------------------------
+# Audio mode
+# ---------------------------------------------------------------------------
+
+PIPER_MODEL_ENV = "PIPER_MODEL_PATH"
+PIPER_CONFIG_ENV = "PIPER_CONFIG_PATH"
+
+
+def build_spoken_script(stories, generated_at_awst):
+    date_str = generated_at_awst.strftime("%A, %d %B %Y")
+    lines = [f"Calm Daily Brief for {date_str}.", ""]
+    for story in stories:
+        if story.get("card_type") == "longform":
+            headline = story.get("headline", "").strip()
+            summary = story.get("summary", "").strip()
+            first_sentence = re.split(r"(?<=[.!?])\s+", summary)[0] if summary else ""
+            lines.append(f"{headline}. {first_sentence} This one is available to read on the site.")
+        else:
+            full = story.get("full_content", "").strip()
+            lines.append(full if full else story.get("teaser", "").strip())
+        lines.append("")
+    lines.append("That's everything for today.")
+    return "\n".join(line for line in lines if line is not None)
+
+
+def synthesize_with_piper(script_text, wav_path):
+    model_path = os.environ.get(PIPER_MODEL_ENV)
+    if not model_path or not os.path.isfile(model_path):
+        raise RuntimeError(f"Piper voice model not found (set {PIPER_MODEL_ENV})")
+    config_path = os.environ.get(PIPER_CONFIG_ENV)
+
+    cmd = ["python3", "-m", "piper", "-m", model_path, "-f", wav_path]
+    if config_path and os.path.isfile(config_path):
+        cmd += ["-c", config_path]
+
+    result = subprocess.run(
+        cmd, input=script_text, text=True, capture_output=True, check=False
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"piper failed: {result.stderr.strip()[:500]}")
+    if not os.path.isfile(wav_path):
+        raise RuntimeError("piper did not produce a WAV file")
+
+
+def encode_to_mp3(wav_path, mp3_path):
+    result = subprocess.run(
+        ["ffmpeg", "-y", "-i", wav_path, "-codec:a", "libmp3lame", "-qscale:a", "4", mp3_path],
+        capture_output=True, text=True, check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"ffmpeg failed: {result.stderr.strip()[-500:]}")
+    if not os.path.isfile(mp3_path):
+        raise RuntimeError("ffmpeg did not produce an MP3 file")
+
+
+def prune_old_audio(failures):
+    """Delete audio files older than the retention window and return the
+    set of date keys that still have audio on disk."""
+    os.makedirs(AUDIO_DIR, exist_ok=True)
+    cutoff = awst_now() - timedelta(days=AUDIO_RETENTION_DAYS)
+    kept = set()
+    for name in os.listdir(AUDIO_DIR):
+        m = re.match(r"^(\d{4}-\d{2}-\d{2})\.mp3$", name)
+        if not m:
+            continue
+        try:
+            file_date = datetime.strptime(m.group(1), "%Y-%m-%d").replace(tzinfo=timezone.utc)
+        except ValueError:
+            continue
+        if file_date < cutoff:
+            try:
+                os.remove(os.path.join(AUDIO_DIR, name))
+            except OSError as exc:
+                failures.append(f"Could not prune old audio {name}: {exc}")
+        else:
+            kept.add(m.group(1))
+    return kept
+
+
+def build_feed_xml(kept_dates):
+    """Rebuild feed.xml from scratch from whatever MP3s currently exist in
+    audio/ — simplest way to stay consistent with the retention prune."""
+    items_xml = []
+    for date_str in sorted(kept_dates, reverse=True):
+        mp3_path = os.path.join(AUDIO_DIR, f"{date_str}.mp3")
+        if not os.path.isfile(mp3_path):
+            continue
+        size = os.path.getsize(mp3_path)
+        try:
+            pub_dt = datetime.strptime(date_str, "%Y-%m-%d").replace(
+                hour=4, minute=30, tzinfo=timezone(timedelta(hours=8))
+            )
+        except ValueError:
+            continue
+        pub_date = pub_dt.strftime("%a, %d %b %Y %H:%M:%S %z")
+        url = f"{SITE_BASE_URL}/audio/{date_str}.mp3"
+        items_xml.append(
+            f"""    <item>
+      <title>Calm Daily Brief — {date_str}</title>
+      <description>The day's calm digest, read aloud.</description>
+      <pubDate>{pub_date}</pubDate>
+      <guid isPermaLink="false">calm-daily-brief-{date_str}</guid>
+      <enclosure url="{xml_escape(url)}" length="{size}" type="audio/mpeg" />
+    </item>"""
+        )
+
+    feed = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>Calm Daily Brief</title>
+    <link>{SITE_BASE_URL}/</link>
+    <description>A calm, daily spoken digest. Unlisted — not submitted to any podcast directory.</description>
+    <language>en</language>
+    <itunes:explicit>false</itunes:explicit>
+{chr(10).join(items_xml)}
+  </channel>
+</rss>
+"""
+    with open(FEED_PATH, "w", encoding="utf-8") as f:
+        f.write(feed)
+
+
+def run_audio():
+    generated_at_awst = awst_now()
+    date_key_str = date_key(generated_at_awst)
+    data_path = os.path.join(DATA_DIR, f"stories-{date_key_str}.json")
+
+    if not os.path.isfile(data_path):
+        print(f"No stories JSON for {date_key_str} yet ({data_path}) — content job "
+              f"hasn't run or hasn't finished. Skipping audio cleanly.", file=sys.stderr)
+        return
+
+    with open(data_path, "r", encoding="utf-8") as f:
+        payload = json.load(f)
+    stories = payload.get("stories", [])
+    if not stories:
+        print(f"Stories JSON for {date_key_str} is empty. Skipping audio.", file=sys.stderr)
+        return
+
+    failures = []
+    script_text = build_spoken_script(stories, generated_at_awst)
+
+    os.makedirs(AUDIO_DIR, exist_ok=True)
+    wav_path = f"/tmp/calm-brief-{date_key_str}.wav"
+    mp3_path = os.path.join(AUDIO_DIR, f"{date_key_str}.mp3")
+
+    try:
+        synthesize_with_piper(script_text, wav_path)
+        encode_to_mp3(wav_path, mp3_path)
+    except Exception as exc:  # noqa: BLE001
+        print(f"Audio generation failed: {exc}", file=sys.stderr)
+        return
+    finally:
+        if os.path.isfile(wav_path):
+            os.remove(wav_path)
+
+    kept = prune_old_audio(failures)
+    kept.add(date_key_str)
+    build_feed_xml(kept)
+
+    if failures:
+        print("Audio housekeeping issues:", file=sys.stderr)
+        for f_ in failures:
+            print(f" - {f_}", file=sys.stderr)
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Calm Daily Brief generator")
+    parser.add_argument("--mode", choices=["content", "audio"], default="content")
+    args = parser.parse_args()
+
+    if args.mode == "audio":
+        run_audio()
+    else:
+        run_content()
 
 
 if __name__ == "__main__":
