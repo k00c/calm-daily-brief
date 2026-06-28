@@ -889,26 +889,32 @@ def run_content():
 
 PIPER_MODEL_ENV = "PIPER_MODEL_PATH"
 PIPER_CONFIG_ENV = "PIPER_CONFIG_PATH"
+PAUSE_SECONDS_BETWEEN_SEGMENTS = 1.2
 
 
-def build_spoken_script(stories, generated_at_awst):
+def build_spoken_segments(stories, generated_at_awst):
+    """One text segment per spoken unit: an intro, then one per story (title
+    announced first, then the content), then a closing line. Kept as
+    separate segments — rather than one block of text — so a real silence
+    gap can be inserted between stories instead of relying on punctuation."""
     date_str = generated_at_awst.strftime("%A, %d %B %Y")
-    lines = [f"Calm Daily Brief for {date_str}.", ""]
+    segments = [f"Calm Daily Brief for {date_str}."]
     for story in stories:
         if story.get("card_type") == "longform":
-            headline = story.get("headline", "").strip()
+            headline = story.get("headline", "").strip() or "Long read"
             summary = story.get("summary", "").strip()
             first_sentence = re.split(r"(?<=[.!?])\s+", summary)[0] if summary else ""
-            lines.append(f"{headline}. {first_sentence} This one is available to read on the site.")
+            text = f"{headline}. {first_sentence} This one is available to read on the site."
         else:
-            full = story.get("full_content", "").strip()
-            lines.append(full if full else story.get("teaser", "").strip())
-        lines.append("")
-    lines.append("That's everything for today.")
-    return "\n".join(line for line in lines if line is not None)
+            topic = story.get("topic", "").strip() or "Story"
+            body = story.get("full_content", "").strip() or story.get("teaser", "").strip()
+            text = f"{topic}. {body}"
+        segments.append(text)
+    segments.append("That's everything for today.")
+    return segments
 
 
-def synthesize_with_piper(script_text, wav_path):
+def synthesize_segment_with_piper(text, wav_path):
     model_path = os.environ.get(PIPER_MODEL_ENV)
     if not model_path or not os.path.isfile(model_path):
         raise RuntimeError(f"Piper voice model not found (set {PIPER_MODEL_ENV})")
@@ -919,12 +925,39 @@ def synthesize_with_piper(script_text, wav_path):
         cmd += ["-c", config_path]
 
     result = subprocess.run(
-        cmd, input=script_text, text=True, capture_output=True, check=False
+        cmd, input=text, text=True, capture_output=True, check=False
     )
     if result.returncode != 0:
         raise RuntimeError(f"piper failed: {result.stderr.strip()[:500]}")
     if not os.path.isfile(wav_path):
         raise RuntimeError("piper did not produce a WAV file")
+
+
+def concat_wavs_with_silence(wav_paths, pause_seconds, output_path):
+    """Concatenate WAV files with a true silence gap between each — gives a
+    reliable, controllable pause between stories regardless of how Piper
+    handles sentence-level pausing."""
+    import wave
+
+    if not wav_paths:
+        raise RuntimeError("no audio segments to concatenate")
+
+    with wave.open(wav_paths[0], "rb") as w0:
+        params = w0.getparams()
+    silence_frames = int(pause_seconds * params.framerate)
+    silence_bytes = b"\x00" * (silence_frames * params.nchannels * params.sampwidth)
+
+    with wave.open(output_path, "wb") as out:
+        out.setparams(params)
+        for i, path in enumerate(wav_paths):
+            with wave.open(path, "rb") as w:
+                if (w.getnchannels(), w.getsampwidth(), w.getframerate()) != (
+                    params.nchannels, params.sampwidth, params.framerate
+                ):
+                    raise RuntimeError(f"WAV format mismatch in {path}")
+                out.writeframes(w.readframes(w.getnframes()))
+            if i < len(wav_paths) - 1:
+                out.writeframesraw(silence_bytes)
 
 
 def encode_to_mp3(wav_path, mp3_path):
@@ -1032,21 +1065,32 @@ def run_audio():
         return
 
     failures = []
-    script_text = build_spoken_script(stories, generated_at_awst)
+    segments = build_spoken_segments(stories, generated_at_awst)
 
     os.makedirs(AUDIO_DIR, exist_ok=True)
-    wav_path = f"/tmp/calm-brief-{date_key_str}.wav"
+    tmp_dir = f"/tmp/calm-brief-{date_key_str}-segments"
+    os.makedirs(tmp_dir, exist_ok=True)
+    combined_wav = f"/tmp/calm-brief-{date_key_str}.wav"
     mp3_path = os.path.join(AUDIO_DIR, f"{date_key_str}.mp3")
 
     try:
-        synthesize_with_piper(script_text, wav_path)
-        encode_to_mp3(wav_path, mp3_path)
+        segment_paths = []
+        for i, segment_text in enumerate(segments):
+            seg_path = os.path.join(tmp_dir, f"segment-{i:02d}.wav")
+            synthesize_segment_with_piper(segment_text, seg_path)
+            segment_paths.append(seg_path)
+
+        concat_wavs_with_silence(segment_paths, PAUSE_SECONDS_BETWEEN_SEGMENTS, combined_wav)
+        encode_to_mp3(combined_wav, mp3_path)
     except Exception as exc:  # noqa: BLE001
         print(f"Audio generation failed: {exc}", file=sys.stderr)
         return
     finally:
-        if os.path.isfile(wav_path):
-            os.remove(wav_path)
+        import shutil
+        if os.path.isdir(tmp_dir):
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+        if os.path.isfile(combined_wav):
+            os.remove(combined_wav)
 
     kept = prune_old_audio(failures)
     kept.add(date_key_str)
