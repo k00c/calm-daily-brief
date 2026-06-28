@@ -989,14 +989,23 @@ def build_feed_xml(kept_dates):
     </item>"""
         )
 
+    cover_url = f"{SITE_BASE_URL}/podcast-cover.png"
     feed = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Calm Daily Brief</title>
     <link>{SITE_BASE_URL}/</link>
     <description>A calm, daily spoken digest. Unlisted — not submitted to any podcast directory.</description>
     <language>en</language>
     <itunes:explicit>false</itunes:explicit>
+    <itunes:author>Calm Daily Brief</itunes:author>
+    <itunes:category text="News" />
+    <itunes:image href="{xml_escape(cover_url)}" />
+    <image>
+      <url>{xml_escape(cover_url)}</url>
+      <title>Calm Daily Brief</title>
+      <link>{SITE_BASE_URL}/</link>
+    </image>
 {chr(10).join(items_xml)}
   </channel>
 </rss>
