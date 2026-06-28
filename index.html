@@ -6,60 +6,96 @@
 <title>Calm Daily Brief</title>
 <style>
   :root {
-    --bg: #faf9f6;
-    --card-bg: #ffffff;
-    --longform-bg: #f5f3ee;
-    --text: #2b2b28;
-    --muted: #767066;
-    --accent: #8a8170;
-    --border: #e4e1d8;
+    --bg: #f6f4ef;
+    --card-bg: #fffefc;
+    --longform-bg: #f0ebe1;
+    --text: #2c2a26;
+    --muted: #8a8377;
+    --muted-2: #aba493;
+    --accent: #7d7256;
+    --accent-soft: #ece6d8;
+    --border: #e6e1d4;
+    --shadow: 0 1px 2px rgba(40, 35, 20, 0.04), 0 4px 14px rgba(40, 35, 20, 0.05);
+    --shadow-hover: 0 2px 4px rgba(40, 35, 20, 0.05), 0 10px 24px rgba(40, 35, 20, 0.08);
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     padding: 0;
     background: var(--bg);
+    background-image: radial-gradient(circle at 20% 0%, rgba(125, 114, 86, 0.05), transparent 55%);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
   header {
-    max-width: 880px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 48px 24px 24px;
+    padding: 56px 24px 28px;
+  }
+  header .kicker {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
   }
   header h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 6px;
-    letter-spacing: 0.01em;
+    font-size: 1.7rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+    color: var(--text);
   }
-  header p {
+  header p.meta {
     margin: 0;
     color: var(--muted);
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+  }
+  header .rule {
+    margin-top: 26px;
+    height: 1px;
+    background: linear-gradient(to right, var(--border), transparent 85%);
+  }
+  .banner {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 130px;
+    border-radius: 14px;
+    margin-bottom: 22px;
   }
   main {
-    max-width: 880px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 0 24px 64px;
+    padding: 8px 24px 72px;
   }
   .grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 18px;
   }
   @media (min-width: 720px) {
-    .grid { grid-template-columns: 1fr 1fr; }
+    .grid { grid-template-columns: 1fr 1fr; gap: 20px; }
   }
   .card {
-    display: block;
+    display: flex;
+    flex-direction: column;
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 22px;
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    padding: 24px;
     text-decoration: none;
     color: var(--text);
+    transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+    border-color: var(--muted-2);
   }
   .card.longform {
     background: var(--longform-bg);
@@ -69,68 +105,94 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
   .topic {
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.72rem;
+    font-weight: 650;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     color: var(--accent);
   }
   .longread-badge {
-    font-size: 0.7rem;
-    color: var(--muted);
-    border: 1px solid var(--border);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--accent);
+    background: rgba(125, 114, 86, 0.1);
     border-radius: 999px;
-    padding: 2px 9px;
+    padding: 3px 10px;
   }
   .headline {
     font-weight: 600;
     margin: 0 0 8px;
-    font-size: 1.02rem;
+    font-size: 1.04rem;
+    letter-spacing: -0.005em;
   }
   .summary {
-    margin: 0 0 14px;
+    margin: 0 0 16px;
     font-size: 0.96rem;
     color: var(--text);
+    flex-grow: 1;
   }
   .card-bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--muted);
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
   }
   .tag {
-    font-size: 0.78rem;
-    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 3px 10px;
   }
   .story-page main {
-    max-width: 640px;
+    max-width: 620px;
+    padding-top: 16px;
   }
   .story-page .back-link {
-    display: inline-block;
-    margin-bottom: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 32px;
     color: var(--muted);
     text-decoration: none;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
+    transition: color 0.15s ease;
   }
-  .story-page h1.story-headline {
-    font-size: 1.3rem;
-    margin: 0 0 18px;
+  .story-page .back-link:hover {
+    color: var(--accent);
+  }
+  .story-page .topic {
+    display: block;
+    margin-bottom: 14px;
+  }
+  .story-page .body-text {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    padding: 28px;
   }
   .story-page .body-text p {
     margin: 0 0 14px;
-    font-size: 1rem;
+    font-size: 1.04rem;
+  }
+  .story-page .body-text p:last-child {
+    margin-bottom: 0;
   }
   .story-page .story-meta {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 24px;
-    padding-top: 18px;
-    border-top: 1px solid var(--border);
+    margin-top: 20px;
     font-size: 0.85rem;
     color: var(--muted);
   }
@@ -138,143 +200,156 @@
     display: inline-block;
     margin-top: 22px;
     font-size: 0.92rem;
+    font-weight: 600;
     color: var(--accent);
     text-decoration: none;
-    border: 1px solid var(--border);
+    background: var(--accent-soft);
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: 11px 18px;
+    transition: background 0.15s ease;
+  }
+  .story-page .original-link:hover {
+    background: #e2dac5;
+  }
+  .footer-note {
+    margin-top: 48px;
+    text-align: center;
+    color: var(--muted-2);
+    font-size: 0.78rem;
   }
 </style>
 </head>
 <body>
 <header>
+  <svg class="banner" viewBox="0 0 900 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A soft abstract gradient, for visual calm only">
+  <defs>
+    <filter id="banner-blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="36" />
+    </filter>
+  </defs>
+  <rect width="900" height="160" fill="#f6f4ef" />
+  <g filter="url(#banner-blur)">
+    <circle cx="776" cy="45" r="127" fill="#cfd8c0" opacity="0.63" /><circle cx="114" cy="16" r="107" fill="#c9d2d6" opacity="0.68" /><circle cx="129" cy="97" r="82" fill="#d7c9a8" opacity="0.66" /><circle cx="701" cy="114" r="86" fill="#e0c9b3" opacity="0.60" />
+  </g>
+</svg>
+  <p class="kicker">Today's brief</p>
   <h1>Calm Daily Brief</h1>
-  <p>Sunday, 28 June 2026 &middot; 10 stories</p>
+  <p class="meta">Sunday, 28 June 2026 &middot; generated 12:23pm AWST &middot; 9 stories</p>
+  <div class="rule"></div>
 </header>
 <main>
   <div class="grid">
     
         <a class="card" href="stories/story-1.html" >
           <div class="card-top">
-            <span class="topic">Perth Transport</span>
+            <span class="topic">WA</span>
             
           </div>
           
-          <p class="summary">The Perth-to-Bunbury train service has returned after years of operational disruptions and delays.</p>
+          <p class="summary">The Perth-to-Bunbury train service has resumed after several years of disruptions and delays.</p>
           <div class="card-bottom">
             <span class="source">ABC News Australia</span>
-            <span class="tag tag-relevant">[relevant]</span>
+            <span class="tag tag-relevant">relevant</span>
           </div>
         </a>
         <a class="card" href="stories/story-2.html" >
           <div class="card-top">
-            <span class="topic">WA Employment</span>
+            <span class="topic">Agriculture</span>
             
           </div>
           
-          <p class="summary">Almost 100 shearing workers across regional Western Australia have enrolled in a new training program to diversify their employment options.</p>
+          <p class="summary">Nearly 100 shearing workers across regional Western Australia have enrolled in a new training program to develop skills outside the traditional shearing industry.</p>
           <div class="card-bottom">
             <span class="source">ABC News Australia</span>
-            <span class="tag tag-relevant">[relevant]</span>
+            <span class="tag tag-relevant">relevant</span>
           </div>
         </a>
         <a class="card" href="stories/story-3.html" >
+          <div class="card-top">
+            <span class="topic">Mental Health</span>
+            
+          </div>
+          
+          <p class="summary">Free perinatal mental health clinics are being expanded across Australia to support new parents experiencing anxiety and other mental health challenges.</p>
+          <div class="card-bottom">
+            <span class="source">ABC News Australia</span>
+            <span class="tag tag-awareness">awareness</span>
+          </div>
+        </a>
+        <a class="card" href="stories/story-4.html" >
+          <div class="card-top">
+            <span class="topic">Digital Legacy</span>
+            
+          </div>
+          
+          <p class="summary">Tech companies like Meta have made it difficult for people to memorialise the social media accounts of deceased loved ones.</p>
+          <div class="card-bottom">
+            <span class="source">ABC News Australia</span>
+            <span class="tag tag-awareness">awareness</span>
+          </div>
+        </a>
+        <a class="card" href="stories/story-5.html" >
           <div class="card-top">
             <span class="topic">NZ Weather</span>
             
           </div>
           
-          <p class="summary">Hundreds of people are expected to remain isolated for several days after this week&#x27;s storm damaged a vital bridge, with some communities without power.</p>
+          <p class="summary">Hundreds of people are expected to be isolated for several days after a recent storm damaged a critical bridge in New Zealand.</p>
           <div class="card-bottom">
             <span class="source">RNZ New Zealand</span>
-            <span class="tag tag-awareness">[awareness]</span>
-          </div>
-        </a>
-        <a class="card" href="stories/story-4.html" >
-          <div class="card-top">
-            <span class="topic">NZ Policy</span>
-            
-          </div>
-          
-          <p class="summary">New Zealand&#x27;s Justice Select Committee has recommended that a bill to make English an official language proceed without amendments, despite significant public opposition.</p>
-          <div class="card-bottom">
-            <span class="source">RNZ New Zealand</span>
-            <span class="tag tag-relevant">[relevant]</span>
-          </div>
-        </a>
-        <a class="card" href="stories/story-5.html" >
-          <div class="card-top">
-            <span class="topic">Bali Tourism</span>
-            
-          </div>
-          
-          <p class="summary">Residents of Bali are concerned that rapid tourism growth combined with inadequate waste management systems is turning the island into an environmental problem zone.</p>
-          <div class="card-bottom">
-            <span class="source">ABC News Australia</span>
-            <span class="tag tag-relevant">[relevant]</span>
+            <span class="tag tag-relevant">relevant</span>
           </div>
         </a>
         <a class="card" href="stories/story-6.html" >
+          <div class="card-top">
+            <span class="topic">Education</span>
+            
+          </div>
+          
+          <p class="summary">Teachers are adopting traditional learning methods in response to growing student reliance on artificial intelligence for study and learning.</p>
+          <div class="card-bottom">
+            <span class="source">SMH</span>
+            <span class="tag tag-awareness">awareness</span>
+          </div>
+        </a>
+        <a class="card" href="stories/story-7.html" >
           <div class="card-top">
             <span class="topic">Science</span>
             
           </div>
           
-          <p class="summary">Researchers are developing artificial intelligence systems to improve early detection of bowel cancer using screening samples.</p>
+          <p class="summary">Researchers are developing artificial intelligence technology to improve the detection of bowel cancer from screening samples.</p>
           <div class="card-bottom">
             <span class="source">RNZ New Zealand</span>
-            <span class="tag tag-awareness">[awareness]</span>
+            <span class="tag tag-awareness">awareness</span>
           </div>
         </a>
-        <a class="card" href="stories/story-7.html" >
+        <a class="card longform" href="https://aeon.co/essays/who-are-the-fire-taming-healers-of-modern-france" target="_blank" rel="noopener noreferrer">
           <div class="card-top">
-            <span class="topic">NZ Healthcare</span>
-            
-          </div>
-          
-          <p class="summary">Palmerston North is losing its last gastroenterologist, raising questions about continuity of specialist digestive health services in the region.</p>
-          <div class="card-bottom">
-            <span class="source">RNZ New Zealand</span>
-            <span class="tag tag-relevant">[relevant]</span>
-          </div>
-        </a>
-        <a class="card" href="stories/story-8.html" >
-          <div class="card-top">
-            <span class="topic">UK Politics</span>
-            
-          </div>
-          
-          <p class="summary">The UK&#x27;s Prime Minister Keir Starmer&#x27;s popularity has declined significantly within a month of taking office, prompting questions about whether the country has become difficult to govern.</p>
-          <div class="card-bottom">
-            <span class="source">ABC News Australia</span>
-            <span class="tag tag-awareness">[awareness]</span>
-          </div>
-        </a>
-        <a class="card longform" href="https://aeon.co/essays/organised-violence-is-a-trade-whether-legal-or-illegal" target="_blank" rel="noopener noreferrer">
-          <div class="card-top">
-            <span class="topic">Longform</span>
+            <span class="topic">Culture</span>
             <span class="longread-badge">Long read</span>
           </div>
-          <p class="headline">The violence specialists</p>
-          <p class="summary">Every society depends on violence workers, but what makes young men take a job that risks their lives and harms others?</p>
+          <p class="headline">Who are the fire-tamers?</p>
+          <p class="summary">From remote farmhouses to oncology clinics, a secret world of French healers works in parallel with conventional medicine - by Susanna Crossman Read on Aeon</p>
           <div class="card-bottom">
             <span class="source">Aeon</span>
             
           </div>
         </a>
-        <a class="card longform" href="https://aeon.co/essays/the-strange-rocks-that-wouldnt-exist-without-us" target="_blank" rel="noopener noreferrer">
+        <a class="card longform" href="https://aeon.co/essays/zhuangzi-and-the-case-against-meritocracy" target="_blank" rel="noopener noreferrer">
           <div class="card-top">
-            <span class="topic">Longform</span>
+            <span class="topic">Philosophy</span>
             <span class="longread-badge">Long read</span>
           </div>
-          <p class="headline">What is this rock?</p>
-          <p class="summary">Not natural, not quite unnatural, the strange new rocks of the Anthropocene stretch the boundaries of geology</p>
+          <p class="headline">No one is self-made</p>
+          <p class="summary">The idea that success is deserved has great traction in the world. But Zhuangzi argues that it is a deeply flawed notion - by Christine Abigail L Tan Read on Aeon</p>
           <div class="card-bottom">
             <span class="source">Aeon</span>
             
           </div>
         </a>
   </div>
+  <p class="footer-note">That's everything for today.</p>
 </main>
 
 <!--
