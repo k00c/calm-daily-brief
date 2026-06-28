@@ -1,68 +1,68 @@
 {
   "date": "2026-06-28",
-  "generated_at": "2026-06-28T14:58:28.617555+00:00",
+  "generated_at": "2026-06-28T15:34:59.052216+00:00",
   "stories": [
     {
       "topic": "Housing",
       "card_type": "news",
       "source": "ABC News Australia",
       "link": "https://www.abc.net.au/news/2026-06-28/worst-property-auction-rates-in-years-for-sydney-melbourne/106852602",
-      "teaser": "Sydney and Melbourne have recorded their weakest property auction clearance rates in years, with fewer than half of homes going to auction finding a buyer.",
-      "full_content": "Capital city property markets are facing headwinds, with Sydney and Melbourne recording their poorest auction results in an extended period. Fewer than half of homes offered at auction are successfully selling, signalling a shift in market conditions across Australia's two largest residential markets.\n\nAuction clearance rates—the proportion of properties that sell versus those withdrawn or passed in—are a key indicator of market health and buyer demand. The current weakness in these rates reflects broader economic pressures on household finances and borrowing capacity.\n\nRealtors and market analysts are monitoring whether this trend will persist or stabilise as the year progresses. The data provides context for buyers and sellers assessing their own timing and expectations in a changing market landscape.",
+      "teaser": "Sydney and Melbourne have recorded their weakest property auction clearance rates in several years, with fewer than half of homes offered finding buyers.",
+      "full_content": "Major Australian capital cities have seen a significant shift in housing market conditions. Sydney and Melbourne both recorded their lowest auction clearance rates in recent years, with less than 50 per cent of properties offered under the hammer successfully finding buyers.\n\nAuction clearance rates are a key indicator of housing demand and prices. When clearance rates fall below 50 per cent, it typically signals a more balanced market where buyers have greater negotiating power compared to periods of strong demand.\n\nThe weaker results reflect broader shifts in housing affordability and buyer sentiment across Australia's largest property markets. The data provides a snapshot of current market conditions as many households reassess their housing decisions.",
       "tag": "relevant"
     },
     {
-      "topic": "Health",
+      "topic": "Policy",
       "card_type": "news",
       "source": "ABC News Australia",
-      "link": "https://www.abc.net.au/news/2026-06-28/new-parents-struggling-with-anxiety-urged-to-seek-help/106781106",
-      "teaser": "Free mental health support services are being rolled out across Australia to help new parents struggling with anxiety and other perinatal health issues.",
-      "full_content": "Perinatal anxiety and depression affect many new parents, but a growing number choose to suffer in silence. Across Australia, specialist perinatal mental health clinics are expanding to offer free support specifically designed for parents during pregnancy and the early months after birth.\n\nThese services provide assessment, counselling, and treatment for conditions including postnatal depression, anxiety, and obsessive-compulsive disorder. Early intervention and professional support can significantly improve outcomes and quality of life for families.\n\nHealthcare providers are working to raise awareness that perinatal mental health concerns are common, treatable, and nothing to be ashamed of. If you or someone you know is struggling, these clinics offer a pathway to care without cost barriers.",
-      "tag": "relevant"
-    },
-    {
-      "topic": "New Zealand",
-      "card_type": "news",
-      "source": "RNZ New Zealand",
-      "link": "https://www.rnz.co.nz/news/weather/633733/hundreds-expected-to-be-cut-off-for-days-after-storm-washes-out-vital-bridge",
-      "teaser": "Several hundred people in New Zealand are expected to be isolated for days after a recent storm washed away a vital bridge, with some areas without power.",
-      "full_content": "A major storm has damaged critical infrastructure in New Zealand, leaving hundreds of residents cut off from main roads and services. The washout of a key bridge has isolated communities and forced authorities to plan alternative supply routes.\n\nEmergency services are assessing the extent of the damage and determining how to deliver food, supplies, and other necessities to affected areas. Options include boat and air transport to reach isolated households.\n\nPower restoration efforts are ongoing, and residents are being advised to prepare for extended isolation. Authorities expect full road access to be restored over several days as repair and reconstruction efforts proceed.",
+      "link": "https://www.abc.net.au/news/2026-06-28/jim-chalmers-property-tax-widow-divorcee-change-negative-gearing/106852084",
+      "teaser": "The Treasurer has promised to address an unintended consequence of the government's property tax overhaul, though details on solutions remain unclear.",
+      "full_content": "The Australian Treasurer has acknowledged that recent changes to property tax breaks have produced unintended outcomes for some groups, including widows and divorcees. The government's overhaul of negative gearing arrangements was designed to protect vulnerable households but has had unforeseen effects on certain taxpayers.\n\nThe Treasurer committed to addressing the issue but declined to specify exactly how the government intends to fix the problem. This suggests the solution is still being developed and assessed across different policy and fiscal scenarios.\n\nThe situation highlights the complexity of tax policy design, where changes intended to benefit one group can sometimes create difficulties for others. Further clarity on the government's approach is expected in coming weeks.",
       "tag": "awareness"
     },
     {
-      "topic": "Indonesia",
+      "topic": "Parental Health",
+      "card_type": "news",
+      "source": "ABC News Australia",
+      "link": "https://www.abc.net.au/news/2026-06-28/new-parents-struggling-with-anxiety-urged-to-seek-help/106781106",
+      "teaser": "New parents struggling with anxiety can access free mental health support through perinatal clinics being rolled out across Australia.",
+      "full_content": "Many new parents experience anxiety and other mental health challenges after the birth of a child, often in silence. Recognising this, Australia is expanding access to specialist perinatal mental health services that offer free support to families.\n\nPerinatal clinics focus specifically on the mental wellbeing of parents during pregnancy and in the months following birth. The services address conditions including postnatal depression, anxiety, and other challenges that can affect new mothers and fathers.\n\nA growing network of these clinics across the country is working to reduce isolation and encourage parents to seek help early. For families experiencing anxiety or other concerns during this period, these services represent an important resource to understand what they are going through and find practical support.",
+      "tag": "relevant"
+    },
+    {
+      "topic": "Language Policy",
+      "card_type": "news",
+      "source": "RNZ New Zealand",
+      "link": "https://www.rnz.co.nz/news/political/633090/english-language-bill-no-changes-suggested-by-justice-select-committee",
+      "teaser": "New Zealand's Justice Select Committee has recommended that a bill to make English an official language proceed without changes, despite significant public opposition.",
+      "full_content": "A legislative proposal to designate English as an official language in New Zealand has advanced despite strong objections from various groups. The Justice Select Committee has completed its review and recommended the bill proceed to the next stage without amendments.\n\nThe move is notably significant given New Zealand's recognition of te reo Māori as an official language in recent years. The bill reflects ongoing debate about national identity, language policy, and the place of different languages in public and official contexts.\n\nThe Committee's decision to recommend no changes means the bill will move forward substantially as drafted. Debate about the policy's merits and its implications for linguistic and cultural recognition will likely continue.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Infrastructure",
+      "card_type": "news",
+      "source": "RNZ New Zealand",
+      "link": "https://www.rnz.co.nz/news/weather/633733/hundreds-expected-to-be-cut-off-for-days-after-storm-washes-out-vital-bridge",
+      "teaser": "Hundreds of people in a New Zealand community remain isolated after severe weather damaged a critical bridge, with authorities preparing supplies by boat and air.",
+      "full_content": "A major storm has washed away a vital bridge, leaving hundreds of residents in an isolated area without road access. Authorities expect the community to remain cut off for several days while repairs are assessed and alternative transport arrangements are made.\n\nMany residents in the affected area are also without power, compounding the challenges of the isolation. Emergency services are planning to deliver food and essential supplies using boats and aircraft to support the community during this period.\n\nThe bridge damage highlights the vulnerability of communities that depend on single access routes. Restoration efforts are underway, but the scale of the damage means repairs will take time. The situation underscores the importance of emergency preparedness and supply coordination in isolated regions.",
+      "tag": "relevant"
+    },
+    {
+      "topic": "Environment",
       "card_type": "news",
       "source": "ABC News Australia",
       "link": "https://www.abc.net.au/news/2026-06-28/tourists-are-turning-bali-into-a-trash-island/106831162",
-      "teaser": "Bali's residents are concerned that rising tourist numbers and inadequate waste management are turning the island into a garbage problem zone.",
-      "full_content": "Bali has long been known as the Island of the Gods, but residents now worry it may become the \"Island of Trash\" as visitor numbers surge. The combination of high tourism volume, gaps in rubbish education, and a partially closed landfill facility has created a mounting waste challenge.\n\nLocal communities and environmental advocates are calling for better infrastructure and public awareness around waste disposal. The island's natural beauty and economic dependence on tourism create a tension between development and environmental management.\n\nAddressing the waste problem will require coordinated effort across tourism operators, local government, and residents. Investment in landfill capacity, recycling systems, and education about responsible waste handling are being discussed as priorities.",
-      "tag": "relevant"
+      "teaser": "Bali faces mounting waste challenges as tourism surges and a landfill facility closure limits disposal capacity, prompting concerns about long-term environmental impact.",
+      "full_content": "Bali's iconic status as a tourist destination is bringing significant environmental pressures. The island's infrastructure is struggling to manage the volume of waste generated by its tourism industry and growing population, particularly as a key landfill facility has been partially closed.\n\nResidents and local authorities point to inadequate rubbish management education and systems as key contributors to the problem. With hundreds of thousands of visitors arriving annually, the scale of waste production has outpaced the island's disposal capacity.\n\nThe situation reflects a broader pattern seen in many popular tourist destinations: rapid growth in visitation without proportional investment in waste management systems. Local officials are working to address the issue, but solving it will require both immediate infrastructure improvements and longer-term changes to how tourists and residents approach waste.",
+      "tag": "awareness"
     },
     {
       "topic": "Science",
       "card_type": "news",
       "source": "RNZ New Zealand",
       "link": "https://www.rnz.co.nz/news/health/631840/ai-promises-breakthrough-in-bowel-cancer-detection",
-      "teaser": "Researchers are developing artificial intelligence tools trained on bowel screening samples to improve the detection of bowel cancer.",
-      "full_content": "A new approach to cancer detection is emerging through artificial intelligence research. Scientists plan to train AI systems using samples from bowel screening tests that would otherwise be discarded, aiming to improve detection rates and accuracy.\n\nBowel cancer is a significant public health concern, and early detection is crucial for outcomes. Machine learning has shown promise in identifying subtle patterns in medical imaging and tissue samples that might be missed by human examination alone.\n\nThe project represents a practical application of AI to healthcare, making use of existing data to advance diagnostic capability. If successful, this approach could offer benefits to screening programs and patients across multiple regions.",
-      "tag": "awareness"
-    },
-    {
-      "topic": "Culture",
-      "card_type": "news",
-      "source": "SMH",
-      "link": "https://www.smh.com.au/culture/musicals/one-week-after-beetlejuice-a-second-musical-blockbuster-is-cancelled-20260622-p608y3.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
-      "teaser": "A second major Broadway musical has been cancelled from its scheduled tour to Sydney, less than a week after another production was scrapped.",
-      "full_content": "Sydney's theatre calendar has faced a setback with the cancellation of a second major Broadway musical tour. The decision means the cast and production team will not be bringing their show to the city as planned.\n\nTheatre operators and audiences are assessing what these cancellations mean for the performing arts calendar. Both cancellations in close succession signal broader challenges around touring schedules, costs, or market conditions.\n\nThe local theatre community is working to understand the reasons and to maintain momentum for future international productions. More details about rescheduling or alternative programming are expected to be announced.",
-      "tag": "awareness"
-    },
-    {
-      "topic": "Policy",
-      "card_type": "news",
-      "source": "RNZ New Zealand",
-      "link": "https://www.rnz.co.nz/news/political/633090/english-language-bill-no-changes-suggested-by-justice-select-committee",
-      "teaser": "New Zealand's Justice Select Committee has recommended passing a bill to make English an official language without any amendments, despite opposition to the proposal.",
-      "full_content": "A bill to establish English as an official language in New Zealand has passed committee review without recommended changes. The Justice Select Committee's decision moves the legislation forward in the parliamentary process despite significant public and stakeholder opposition.\n\nThe proposal has been contested by groups concerned about impacts on te reo Māori and multicultural communities. The committee's recommendation reflects one view of the legislative intent, but the full parliament will ultimately decide the bill's fate.\n\nLanguage policy remains a topic of active debate in New Zealand society, touching on questions of identity, inclusivity, and national priorities. The coming parliamentary debates will likely surface these broader conversations.",
+      "teaser": "Researchers are developing artificial intelligence tools to improve bowel cancer detection using samples from routine screening programs.",
+      "full_content": "New research is exploring how artificial intelligence can enhance the detection of bowel cancer in screening samples. Scientists plan to train AI systems using existing bowel screening samples that would otherwise be discarded after routine testing.\n\nEarly detection is critical for improving bowel cancer outcomes, and AI offers potential to identify abnormalities that might be missed by traditional analysis. By repurposing samples already collected through screening programs, researchers can develop these tools without requiring additional patient procedures.\n\nThe approach represents a practical application of AI in healthcare, where the technology is used to augment existing screening processes. If successful, the method could improve cancer detection rates and contribute to better patient outcomes across populations that participate in bowel screening programs.",
       "tag": "relevant"
     },
     {
@@ -71,17 +71,23 @@
       "source": "Aeon",
       "link": "https://aeon.co/essays/organised-violence-is-a-trade-whether-legal-or-illegal",
       "headline": "The violence specialists",
-      "summary": "Every society depends on violence workers, but what makes young men take a job that risks their lives and harms others? - by Raúl Zepeda Gil",
-      "tag": null
+      "summary": "Every society depends on violence workers, but what makes young men take a job that risks their lives and harms others? - by Raúl Zepeda Gil"
+    },
+    {
+      "topic": "Philosophy",
+      "card_type": "longform",
+      "source": "Aeon",
+      "link": "https://aeon.co/essays/what-ancient-philosophy-really-thought-about-domestic-life",
+      "headline": "A philosophy of home",
+      "summary": "The household is a community, as much as the state, and ancient philosophy had much more to say about it than we think - by Sandrine Bergès"
     },
     {
       "topic": "Science",
       "card_type": "longform",
       "source": "Nautilus",
-      "link": "https://nautil.us/four-new-chameleon-species-found-in-tropical-sky-islands-1282292/",
-      "headline": "Four New Chameleon Species Found in Tropical \"Sky Islands\"",
-      "summary": "Two of which are named after pioneering female scientists",
-      "tag": null
+      "link": "https://nautil.us/the-new-seismic-discovery-beneath-the-surface-of-mars-1282289/",
+      "headline": "The New Seismic Discovery Beneath the Surface of Mars",
+      "summary": "Earth isn't alone—in its rock recycling processes"
     }
   ],
   "failures": [
