@@ -14,6 +14,7 @@ count, topic labels, summaries, source names, tags, and links.
 import html
 import json
 import os
+import random
 import re
 import sys
 from datetime import datetime, timedelta, timezone
@@ -290,6 +291,14 @@ SHARED_CSS = """
     height: 1px;
     background: linear-gradient(to right, var(--border), transparent 85%);
   }
+  .banner {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 130px;
+    border-radius: 14px;
+    margin-bottom: 22px;
+  }
   main {
     max-width: 900px;
     margin: 0 auto;
@@ -448,10 +457,50 @@ def slugify(text, fallback):
     return slug or fallback
 
 
+BANNER_PALETTE = [
+    "#e7ddc6",  # warm sand
+    "#d7c9a8",  # deeper sand
+    "#cdd5c4",  # soft sage
+    "#c9d2d6",  # muted blue-grey
+    "#e0c9b3",  # dusty clay
+    "#d8c9d3",  # faint heather
+    "#cfd8c0",  # pale moss
+]
+
+
+def render_banner_svg(seed_str):
+    """A soft, blurred abstract banner, deterministic per day so it changes
+    daily but always stays muted and calm — no photos, no external assets."""
+    rng = random.Random(seed_str)
+    width, height = 900, 160
+    blobs = []
+    for _ in range(4):
+        cx = rng.uniform(width * 0.05, width * 0.95)
+        cy = rng.uniform(height * 0.1, height * 0.9)
+        r = rng.uniform(70, 130)
+        color = rng.choice(BANNER_PALETTE)
+        opacity = rng.uniform(0.45, 0.7)
+        blobs.append(f'<circle cx="{cx:.0f}" cy="{cy:.0f}" r="{r:.0f}" fill="{color}" opacity="{opacity:.2f}" />')
+
+    return f"""<svg class="banner" viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg" \
+role="img" aria-label="A soft abstract gradient, for visual calm only">
+  <defs>
+    <filter id="banner-blur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="36" />
+    </filter>
+  </defs>
+  <rect width="{width}" height="{height}" fill="#f6f4ef" />
+  <g filter="url(#banner-blur)">
+    {''.join(blobs)}
+  </g>
+</svg>"""
+
+
 def render_html(stories, failures, generated_at_awst):
     date_str = generated_at_awst.strftime("%A, %d %B %Y")
     time_str = generated_at_awst.strftime("%-I:%M%p").lower() + " AWST"
     count = len(stories)
+    banner_svg = render_banner_svg(generated_at_awst.strftime("%Y-%m-%d"))
 
     cards_html = []
     for i, story in enumerate(stories):
@@ -507,6 +556,7 @@ def render_html(stories, failures, generated_at_awst):
 </head>
 <body>
 <header>
+  {banner_svg}
   <p class="kicker">Today's brief</p>
   <h1>Calm Daily Brief</h1>
   <p class="meta">{date_str} &middot; generated {time_str} &middot; {count} stories</p>
@@ -525,6 +575,7 @@ def render_html(stories, failures, generated_at_awst):
 
 def render_story_page(story, generated_at_awst):
     date_str = generated_at_awst.strftime("%A, %d %B %Y")
+    banner_svg = render_banner_svg(generated_at_awst.strftime("%Y-%m-%d") + "-story")
     topic = html.escape(story.get("topic", ""))
     source = html.escape(story.get("source", ""))
     link = html.escape(story.get("link", "#"), quote=True)
@@ -544,6 +595,7 @@ def render_story_page(story, generated_at_awst):
 </head>
 <body class="story-page">
 <main>
+  {banner_svg}
   <a class="back-link" href="../index.html">&larr; Back to Calm Daily Brief</a>
   <span class="topic">{topic}</span>
   <div class="body-text">
