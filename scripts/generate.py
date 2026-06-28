@@ -30,9 +30,6 @@ from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
 from xml.sax.saxutils import escape as xml_escape
 
-import feedparser
-from anthropic import Anthropic
-
 UA = "Mozilla/5.0 (compatible; CalmDailyBriefBot/1.0; +https://github.com/)"
 REPO_SLUG = "k00c/calm-daily-brief"
 SITE_BASE_URL = "https://k00c.github.io/calm-daily-brief"
@@ -117,6 +114,8 @@ def parse_entry_date(entry):
 
 
 def fetch_feed(source_id, name, url, category, is_longform, failures):
+    import feedparser
+
     try:
         parsed = feedparser.parse(url, request_headers={"User-Agent": UA})
         if parsed.bozo and not parsed.entries:
@@ -268,6 +267,8 @@ TOOL_SCHEMA = {
 
 
 def select_and_rewrite(candidates):
+    from anthropic import Anthropic
+
     client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     reader_context = os.environ.get("READER_CONTEXT", "").strip() or DEFAULT_READER_CONTEXT
     system_prompt = SYSTEM_PROMPT_TEMPLATE.format(reader_context=reader_context)
