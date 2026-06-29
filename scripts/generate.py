@@ -792,6 +792,8 @@ def write_archive_day(stories, generated_at_awst, date_key_str):
         f.write(index_html)
 
     for i, story in enumerate(stories):
+        if not isinstance(story, dict):
+            continue
         if story.get("card_type") == "longform":
             continue
         page = render_story_page(
@@ -915,6 +917,8 @@ def build_spoken_segments(stories, generated_at_awst):
 
     topics = []
     for story in stories:
+        if not isinstance(story, dict):
+            continue
         if story.get("card_type") == "longform":
             label = story.get("headline", "").strip() or "a long read"
         else:
@@ -933,6 +937,8 @@ def build_spoken_segments(stories, generated_at_awst):
     )
     segments = [intro]
     for story in stories:
+        if not isinstance(story, dict):
+            continue
         if story.get("card_type") == "longform":
             headline = story.get("headline", "").strip() or "Long read"
             summary = story.get("summary", "").strip()
