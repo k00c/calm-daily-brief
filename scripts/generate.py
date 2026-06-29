@@ -27,7 +27,6 @@ import re
 import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
-from urllib.parse import quote
 from xml.sax.saxutils import escape as xml_escape
 
 UA = "Mozilla/5.0 (compatible; CalmDailyBriefBot/1.0; +https://github.com/)"
@@ -77,21 +76,6 @@ def awst_now():
 def date_key(dt):
     return dt.strftime("%Y-%m-%d")
 
-
-def issue_link(action, label, story, date_str):
-    """Pre-filled GitHub Issue link — the no-backend read/skip signal."""
-    title = f"{action}: {label} — {date_str}"
-    body_lines = [
-        f"Date: {date_str}",
-        f"Topic: {story.get('topic', '')}",
-        f"Source: {story.get('source', '')}",
-        f"Link: {story.get('link', '')}",
-    ]
-    body = "\n".join(body_lines)
-    return (
-        f"https://github.com/{REPO_SLUG}/issues/new"
-        f"?title={quote(title)}&body={quote(body)}&labels={quote(action.lower())}"
-    )
 
 
 def strip_html(raw):
@@ -441,19 +425,7 @@ SHARED_CSS = """
     border-radius: 999px;
     padding: 3px 10px;
   }
-  .feedback-links {
-    display: flex;
-    gap: 10px;
-  }
-  .feedback-links a {
-    font-size: 0.74rem;
-    color: var(--muted);
-    text-decoration: none;
-    border-bottom: 1px dotted var(--muted-2);
-  }
-  .feedback-links a:hover {
-    color: var(--accent);
-  }
+
   .archive-note {
     margin-top: 36px;
     text-align: center;
@@ -617,16 +589,6 @@ def render_html(stories, failures, generated_at_awst, link_prefix=""):
             headline_html = ""
             body = html.escape(story.get("teaser", ""))
 
-        label = story.get("headline") or story.get("topic", "story")
-        read_link = html.escape(issue_link("Read", label, story, date_key_str), quote=True)
-        skip_link = html.escape(issue_link("Skip", label, story, date_key_str), quote=True)
-        feedback_html = (
-            f'<span class="feedback-links">'
-            f'<a href="{read_link}" target="_blank" rel="noopener noreferrer">mark read</a>'
-            f'<a href="{skip_link}" target="_blank" rel="noopener noreferrer">skip</a>'
-            f"</span>"
-        )
-
         cards_html.append(
             f"""
         <div class="{card_class}">
@@ -641,7 +603,6 @@ def render_html(stories, failures, generated_at_awst, link_prefix=""):
           <div class="card-bottom">
             <span class="source">{source}</span>
             {tag_html}
-            {feedback_html}
           </div>
         </div>"""
         )
@@ -690,16 +651,6 @@ def render_story_page(story, generated_at_awst, index, date_key_str, back_href="
     tag = story.get("tag")
     tag_html = f'<span class="tag tag-{tag}">{tag}</span>' if tag in TAG_NEWS else ""
 
-    label = story.get("headline") or story.get("topic", "story")
-    read_link = html.escape(issue_link("Read", label, story, date_key_str), quote=True)
-    skip_link = html.escape(issue_link("Skip", label, story, date_key_str), quote=True)
-    feedback_html = (
-        f'<span class="feedback-links">'
-        f'<a href="{read_link}" target="_blank" rel="noopener noreferrer">mark read</a>'
-        f'<a href="{skip_link}" target="_blank" rel="noopener noreferrer">skip</a>'
-        f"</span>"
-    )
-
     paragraphs = [p.strip() for p in re.split(r"\n+", story.get("full_content", "")) if p.strip()]
     body_html = "".join(f"<p>{html.escape(p)}</p>" for p in paragraphs)
 
@@ -724,7 +675,6 @@ def render_story_page(story, generated_at_awst, index, date_key_str, back_href="
   <div class="story-meta">
     <span class="source">{source}</span>
     {tag_html}
-    {feedback_html}
   </div>
   <a class="original-link" href="{link}" target="_blank" rel="noopener noreferrer">Read the original story &rarr;</a>
   <p class="footer-note" style="margin-top: 40px;">{date_str}</p>
