@@ -1,0 +1,94 @@
+{
+  "date": "2026-06-30",
+  "generated_at": "2026-06-30T01:44:33.024737+00:00",
+  "stories": [
+    {
+      "topic": "Employment",
+      "card_type": "news",
+      "source": "RNZ New Zealand",
+      "link": "https://www.rnz.co.nz/news/health/641972/we-re-running-out-of-specialist-blood-cancer-scientists-in-nz",
+      "teaser": "A leading blood cancer specialist is leaving New Zealand for Australia, highlighting gaps in the country's ability to recruit and retain specialised scientists.",
+      "full_content": "New Zealand faces a significant challenge in keeping specialist blood cancer scientists, with leading researchers citing lack of support and career pathways as reasons to leave the country. A prominent specialist departing for Australia has raised concerns about the nation's broader capacity to attract and retain scientific talent in critical health fields.\n\nWithout clear recruitment and retention strategies, gaps in specialist expertise will grow. The departure represents a loss not only of individual expertise but of mentorship and knowledge that supports the next generation of blood cancer researchers.\n\nThe issue reflects wider challenges in maintaining a skilled scientific workforce and the importance of institutional investment in career progression for specialists.",
+      "tag": "relevant"
+    },
+    {
+      "topic": "Insurance",
+      "card_type": "news",
+      "source": "RNZ New Zealand",
+      "link": "https://www.rnz.co.nz/news/environment_climate/642026/1-in-2-people-worried-about-insurance-affordability-as-risk-of-climate-disasters-grows-poll",
+      "teaser": "Half of New Zealanders report concern about the cost and availability of household insurance as climate-related disaster risks increase.",
+      "full_content": "A recent poll shows that one in two New Zealanders are worried about affording house insurance, driven partly by growing risks of climate-driven disasters such as flooding and storms. The cost and accessibility of insurance have become significant household concerns across the country.\n\nAs insurers reassess risk in vulnerable regions, premiums are rising and coverage is becoming harder to secure in some areas. Homeowners face difficult choices about protecting their properties while managing budget constraints.\n\nThe trend underscores broader questions about how households and insurers will adapt to changing climate conditions and what support may be needed to maintain affordable protection for families.",
+      "tag": "relevant"
+    },
+    {
+      "topic": "Nuclear Safety",
+      "card_type": "news",
+      "source": "SMH",
+      "link": "https://www.smh.com.au/national/no-nuclear-safety-plan-aukus-pact-under-scrutiny-at-public-inquiry-20260629-p60b42.html",
+      "teaser": "Experts have raised concerns about the absence of a comprehensive nuclear safety plan as Australia prepares to operate nuclear-powered submarines at HMAS Stirling near Perth.",
+      "full_content": "As Australia moves forward with the AUKUS pact and plans to base nuclear submarines at HMAS Stirling south of Perth, public inquiry proceedings have highlighted gaps in nuclear safety preparations. Experts and observers point to the lack of a detailed safety framework for operating these vessels in Australian waters.\n\nThe concerns centre on emergency protocols, environmental safeguards, and community safety measures that should be in place before operations begin. A comprehensive plan is essential to manage the unique challenges of nuclear submarine operations in Australian ports.\n\nThe public inquiry process is examining these issues, raising important questions about preparation and oversight as the nation undertakes this significant technological and strategic commitment.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Science",
+      "card_type": "news",
+      "source": "Nautilus",
+      "link": "https://nautil.us/the-new-seismic-discovery-beneath-the-surface-of-mars-1282289/",
+      "teaser": "New seismic data from beneath Mars's surface has revealed rock recycling processes similar to those on Earth.",
+      "full_content": "Recent seismic observations from the Martian subsurface have uncovered evidence of geological processes that parallel recycling mechanisms found on Earth. These discoveries provide fresh insights into the internal dynamics and composition of Mars.\n\nThe findings suggest that Mars, despite its current dormancy, has experienced similar internal geological cycles to those that shape our own planet. Understanding these processes helps scientists build a clearer picture of planetary evolution and habitability.\n\nThese observations from Mars contribute to broader knowledge about how rocky planets develop and change over vast timescales, with implications for understanding planetary geology across our solar system.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Policy",
+      "card_type": "news",
+      "source": "RNZ New Zealand",
+      "link": "https://www.rnz.co.nz/news/political/641860/no-one-wants-to-be-sick-forever-act-party-s-new-welfare-policy-slammed",
+      "teaser": "The ACT Party's new welfare policy has drawn criticism from beneficiary advocates who question its underlying assumptions about people receiving long-term support.",
+      "full_content": "The ACT Party has announced new welfare policy changes that have attracted criticism from advocates for benefit recipients. The policy's assumptions about long-term welfare users and their motivations have been contested by those with direct knowledge of beneficiaries' circumstances.\n\nAdvocates argue that the policy may not account for the complexity of individual situations, including chronic illness, disability, and other barriers to employment. They emphasise that most people on long-term benefits want to work and contribute but face systemic challenges.\n\nThe debate highlights ongoing tension in policy discussions around welfare support, employment incentives, and how systems should balance individual need with broader social goals.",
+      "tag": "relevant"
+    },
+    {
+      "topic": "Healthcare",
+      "card_type": "news",
+      "source": "RNZ New Zealand",
+      "link": "https://www.rnz.co.nz/news/health/641917/last-coal-boiler-in-a-nz-hospital-decommissioned",
+      "teaser": "New Zealand has completed the replacement of its final coal-fired boiler across the Health New Zealand hospital system.",
+      "full_content": "Health New Zealand has finished phasing out coal boilers from its hospital campuses, replacing the last unit that had been in operation. The project involved upgrading heating systems across eight health campuses, removing 13 coal boilers in total.\n\nThe transition reduces the environmental footprint of the hospital system and improves air quality around these facilities. It represents a step toward more sustainable healthcare infrastructure as the nation moves away from fossil fuel dependence.\n\nThe completion of this project demonstrates progress in aligning public health infrastructure with environmental and climate commitments.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Multiculturalism",
+      "card_type": "news",
+      "source": "ABC News Australia",
+      "link": "https://www.abc.net.au/news/2026-06-29/anthony-albanese-defends-budget-cgt-change-and-multiculturalism/106857928",
+      "teaser": "Prime Minister Anthony Albanese has defended Australia's multicultural society and recent budget changes affecting capital gains tax.",
+      "full_content": "Prime Minister Albanese has made a public statement affirming Australia's multicultural identity and the value of cultural diversity to the nation. His comments came amid discussion of budget changes to capital gains tax policy.\n\nThe Prime Minister framed multiculturalism as fundamental to Australia's character and social cohesion. His remarks reflect ongoing policy debates about tax settings and their impact on different parts of the community.\n\nThe statement underscores the government's position on the importance of inclusive policies and the role of diverse communities in shaping Australia's future.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Science",
+      "card_type": "longform",
+      "source": "Aeon",
+      "link": "https://aeon.co/videos/the-13-billion-years-that-led-to-us-a-cosmological-timelapse",
+      "headline": "Timelapse of the Universe",
+      "summary": "When 13 billion years of the cosmos get condensed into 10 epic minutes, when in the timelapse do you think humans appear?",
+      "tag": null
+    },
+    {
+      "topic": "Philosophy",
+      "card_type": "longform",
+      "source": "Aeon",
+      "link": "https://aeon.co/essays/zhuangzi-and-the-case-against-meritocracy",
+      "headline": "No one is self-made",
+      "summary": "The idea that success is deserved has great traction in the world. But Zhuangzi argues that it is a deeply flawed notion",
+      "tag": null
+    }
+  ],
+  "failures": [
+    "Reuters World News: <urlopen error [Errno -2] Name or service not known>",
+    "ANTARA News Indonesia: <unknown>:31:68: not well-formed (invalid token)",
+    "The Conversation AU: <unknown>:57:57: not well-formed (invalid token)",
+    "Hakai Magazine: <unknown>:7:2: mismatched tag",
+    "Delayed Gratification: <urlopen error [Errno 110] Connection timed out>"
+  ]
+}
