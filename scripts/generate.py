@@ -591,7 +591,11 @@ def render_html(stories, failures, generated_at_awst, link_prefix=""):
             except (json.JSONDecodeError, TypeError):
                 failures.append(f"Story {i + 1}: invalid format, skipping")
                 continue
-        
+
+        if not isinstance(story, dict):
+            failures.append(f"Story {i + 1}: expected object, got {type(story).__name__}, skipping")
+            continue
+
         is_longform = story.get("card_type") == "longform"
         topic = html.escape(story.get("topic", ""))
         source = html.escape(story.get("source", ""))
@@ -871,6 +875,8 @@ def run_content():
             output = render_html(stories, failures, generated_at_awst)
             reset_stories_dir()
             for i, story in enumerate(stories):
+                if not isinstance(story, dict):
+                    continue
                 if story.get("card_type") == "longform":
                     continue
                 page = render_story_page(story, generated_at_awst, i, date_key_str)
