@@ -27,7 +27,6 @@ import re
 import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
-from urllib.parse import quote
 from xml.sax.saxutils import escape as xml_escape
 
 UA = "Mozilla/5.0 (compatible; CalmDailyBriefBot/1.0; +https://github.com/)"
@@ -77,21 +76,6 @@ def awst_now():
 def date_key(dt):
     return dt.strftime("%Y-%m-%d")
 
-
-def issue_link(action, label, story, date_str):
-    """Pre-filled GitHub Issue link — the no-backend read/skip signal."""
-    title = f"{action}: {label} — {date_str}"
-    body_lines = [
-        f"Date: {date_str}",
-        f"Topic: {story.get('topic', '')}",
-        f"Source: {story.get('source', '')}",
-        f"Link: {story.get('link', '')}",
-    ]
-    body = "\n".join(body_lines)
-    return (
-        f"https://github.com/{REPO_SLUG}/issues/new"
-        f"?title={quote(title)}&body={quote(body)}&labels={quote(action.lower())}"
-    )
 
 
 def strip_html(raw):
@@ -200,7 +184,13 @@ Each news story needs TWO pieces of text:
 cliffhangers, no "find out what happens" framing — just the core fact, stated plainly.
 2. "full_content" — 3-4 short calm paragraphs (roughly 150-220 words total) for the story's own \
 page, expanding on the teaser with the relevant factual detail from the title and summary \
-provided.
+provided. Additional rules for full_content specifically:
+- Stick strictly to what happened, to whom, and what the current status is — nothing more.
+- Do not include any sentence that raises broader systemic questions, implies patterns of failure, \
+or frames the story as evidence of an institutional problem.
+- Do not editorialize about what the story "highlights", "reveals", or "raises questions about".
+- If the story cannot be written in 3-4 factual paragraphs without implying threat or systemic \
+harm, do not select it — choose a different candidate instead.
 Both the teaser and full_content must follow these rules:
 - Strip all threat-amplifying language: crisis, chaos, slams, explosive, shocking, alarming, \
 fears, warns, devastating, bombshell, and similar words.
@@ -208,6 +198,14 @@ fears, warns, devastating, bombshell, and similar words.
 - Do not include conflict casualties or graphic detail, crime specifics, political outrage \
 framing, or economic fear framing. If a candidate story is primarily about one of these, do not \
 select it — choose a different candidate instead.
+- Do not select stories involving crime outcomes or police incidents (pursuits, arrests, charges, \
+sentences), regardless of how neutrally they are framed.
+- Do not select stories where the news hook is harm or injury to an individual — including aged \
+care incidents, medical harm, retirement village injuries, or institutional mistreatment.
+- Do not select stories reporting mass casualty or mass illness statistics, even when the language \
+is calm and the numbers are presented without drama.
+- Exclusion test: would reading this story activate a threat response in someone with a \
+sensitised nervous system, regardless of how calmly it is written? If yes, exclude it.
 - End full_content with one tag, stated separately in the "tag" field: "awareness" (no action \
 needed) or "relevant" (worth following). Long-form pieces get no tag (use null).
 - Give each story a single-word (or short, e.g. two-word) topic label, e.g. Housing, Science, \
@@ -441,19 +439,7 @@ SHARED_CSS = """
     border-radius: 999px;
     padding: 3px 10px;
   }
-  .feedback-links {
-    display: flex;
-    gap: 10px;
-  }
-  .feedback-links a {
-    font-size: 0.74rem;
-    color: var(--muted);
-    text-decoration: none;
-    border-bottom: 1px dotted var(--muted-2);
-  }
-  .feedback-links a:hover {
-    color: var(--accent);
-  }
+
   .archive-note {
     margin-top: 36px;
     text-align: center;
@@ -591,7 +577,11 @@ def render_html(stories, failures, generated_at_awst, link_prefix=""):
             except (json.JSONDecodeError, TypeError):
                 failures.append(f"Story {i + 1}: invalid format, skipping")
                 continue
-        
+
+        if not isinstance(story, dict):
+            failures.append(f"Story {i + 1}: expected object, got {type(story).__name__}, skipping")
+            continue
+
         is_longform = story.get("card_type") == "longform"
         topic = html.escape(story.get("topic", ""))
         source = html.escape(story.get("source", ""))
@@ -613,16 +603,6 @@ def render_html(stories, failures, generated_at_awst, link_prefix=""):
             headline_html = ""
             body = html.escape(story.get("teaser", ""))
 
-        label = story.get("headline") or story.get("topic", "story")
-        read_link = html.escape(issue_link("Read", label, story, date_key_str), quote=True)
-        skip_link = html.escape(issue_link("Skip", label, story, date_key_str), quote=True)
-        feedback_html = (
-            f'<span class="feedback-links">'
-            f'<a href="{read_link}" target="_blank" rel="noopener noreferrer">mark read</a>'
-            f'<a href="{skip_link}" target="_blank" rel="noopener noreferrer">skip</a>'
-            f"</span>"
-        )
-
         cards_html.append(
             f"""
         <div class="{card_class}">
@@ -637,7 +617,6 @@ def render_html(stories, failures, generated_at_awst, link_prefix=""):
           <div class="card-bottom">
             <span class="source">{source}</span>
             {tag_html}
-            {feedback_html}
           </div>
         </div>"""
         )
@@ -686,16 +665,6 @@ def render_story_page(story, generated_at_awst, index, date_key_str, back_href="
     tag = story.get("tag")
     tag_html = f'<span class="tag tag-{tag}">{tag}</span>' if tag in TAG_NEWS else ""
 
-    label = story.get("headline") or story.get("topic", "story")
-    read_link = html.escape(issue_link("Read", label, story, date_key_str), quote=True)
-    skip_link = html.escape(issue_link("Skip", label, story, date_key_str), quote=True)
-    feedback_html = (
-        f'<span class="feedback-links">'
-        f'<a href="{read_link}" target="_blank" rel="noopener noreferrer">mark read</a>'
-        f'<a href="{skip_link}" target="_blank" rel="noopener noreferrer">skip</a>'
-        f"</span>"
-    )
-
     paragraphs = [p.strip() for p in re.split(r"\n+", story.get("full_content", "")) if p.strip()]
     body_html = "".join(f"<p>{html.escape(p)}</p>" for p in paragraphs)
 
@@ -720,7 +689,6 @@ def render_story_page(story, generated_at_awst, index, date_key_str, back_href="
   <div class="story-meta">
     <span class="source">{source}</span>
     {tag_html}
-    {feedback_html}
   </div>
   <a class="original-link" href="{link}" target="_blank" rel="noopener noreferrer">Read the original story &rarr;</a>
   <p class="footer-note" style="margin-top: 40px;">{date_str}</p>
@@ -788,6 +756,8 @@ def write_archive_day(stories, generated_at_awst, date_key_str):
         f.write(index_html)
 
     for i, story in enumerate(stories):
+        if not isinstance(story, dict):
+            continue
         if story.get("card_type") == "longform":
             continue
         page = render_story_page(
@@ -871,6 +841,8 @@ def run_content():
             output = render_html(stories, failures, generated_at_awst)
             reset_stories_dir()
             for i, story in enumerate(stories):
+                if not isinstance(story, dict):
+                    continue
                 if story.get("card_type") == "longform":
                     continue
                 page = render_story_page(story, generated_at_awst, i, date_key_str)
@@ -909,6 +881,8 @@ def build_spoken_segments(stories, generated_at_awst):
 
     topics = []
     for story in stories:
+        if not isinstance(story, dict):
+            continue
         if story.get("card_type") == "longform":
             label = story.get("headline", "").strip() or "a long read"
         else:
@@ -927,6 +901,8 @@ def build_spoken_segments(stories, generated_at_awst):
     )
     segments = [intro]
     for story in stories:
+        if not isinstance(story, dict):
+            continue
         if story.get("card_type") == "longform":
             headline = story.get("headline", "").strip() or "Long read"
             summary = story.get("summary", "").strip()
