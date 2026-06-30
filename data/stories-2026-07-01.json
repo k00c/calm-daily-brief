@@ -1,0 +1,90 @@
+{
+  "date": "2026-07-01",
+  "generated_at": "2026-07-01T01:26:27.504743+00:00",
+  "stories": [
+    {
+      "topic": "Housing",
+      "card_type": "news",
+      "source": "ABC News Australia",
+      "link": "https://www.abc.net.au/news/2026-07-01/national-property-prices-market-decline-cotality/106857980",
+      "teaser": "Australian home values have recorded their biggest decline in more than three years as the slowdown spreads nationwide.",
+      "full_content": "Home values across Australia have fallen significantly, marking the largest national decline since 2022. The housing market slowdown that began in Sydney and Melbourne has now spread to regions across the country, affecting property values more broadly.\n\nThe decline reflects ongoing pressures on the housing market, including higher interest rates and broader economic conditions. Property owners in all states and territories are experiencing the effects of this shift as values adjust across different regions.\n\nThe data shows that the contraction is widespread rather than confined to major cities, indicating a sustained period of market adjustment across the nation.",
+      "tag": "relevant"
+    },
+    {
+      "topic": "Energy",
+      "card_type": "news",
+      "source": "SMH",
+      "link": "https://www.smh.com.au/politics/federal/three-free-hours-of-power-begins-now-if-you-ask-for-it-20260630-p60bbj.html",
+      "teaser": "A new electricity scheme offering three free hours of power is now available to all customers who opt in.",
+      "full_content": "Homeowners and renters can now access a new electricity scheme that provides three free hours of power each day, with the potential to save hundreds of dollars annually. The scheme is available to all electricity customers but requires them to actively opt in to participate.\n\nThe program works by allowing customers to use power during specified off-peak periods at no charge. This approach shifts consumption patterns and helps balance demand across the grid while providing direct savings to participating households.\n\nThose interested in joining the scheme can contact their electricity provider to enrol. Early adoption rates will help determine how widely the initiative is taken up across the country.",
+      "tag": "relevant"
+    },
+    {
+      "topic": "Science",
+      "card_type": "news",
+      "source": "SMH",
+      "link": "https://www.smh.com.au/national/fifth-case-of-bird-flu-confirmed-20260630-p60bh9.html",
+      "teaser": "A fifth case of bird flu has been confirmed in Australia.",
+      "full_content": "Australian health authorities have confirmed a fifth case of bird flu in the country. The case is being monitored as part of ongoing surveillance efforts to track the spread of the virus.\n\nBird flu cases in Australia remain relatively uncommon, and each confirmed case is tracked carefully by public health officials. The detection of additional cases reflects the importance of continued monitoring and early identification.\n\nAuthorities continue to advise members of the public on precautions related to handling birds and maintaining hygiene standards.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Science",
+      "card_type": "news",
+      "source": "RNZ New Zealand",
+      "link": "https://www.rnz.co.nz/news/science-and-technology/645242/awards-for-the-best-and-brightest-of-new-zealand-science",
+      "teaser": "New Zealand's Prime Minister's Science Prize has recognised outstanding achievements in research and innovation.",
+      "full_content": "The Prime Minister's Science Prize has awarded recognition to leading researchers and scientists in New Zealand. The winners include scientists working on infant health and communication research that addresses complex public issues.\n\nThe awards celebrate excellence in scientific achievement and the tangible ways research contributes to practical solutions in areas like health and public discourse. Recognition of these achievements highlights the diverse fields in which New Zealand scientists are making advances.\n\nThe prize reflects New Zealand's commitment to supporting scientific inquiry and innovation across multiple disciplines.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Awareness",
+      "card_type": "news",
+      "source": "ABC News Australia",
+      "link": "https://www.abc.net.au/news/2026-06-30/usman-khawaja-helps-national-awareness-campaign-islamophobia/106862024",
+      "teaser": "Former Australian cricketer Usman Khawaja has helped launch a national campaign to raise awareness about Islamophobia.",
+      "full_content": "Usman Khawaja, who retired from international cricket at age 39 and was the first Muslim to play for Australia, is supporting a new national awareness campaign focused on Islamophobia. The campaign aims to increase public understanding of discrimination issues affecting Muslim communities.\n\nKhawaja notes that women in particular are experiencing higher rates of hostile incidents. The campaign provides information and resources to help the broader community better understand these challenges.\n\nThe initiative brings together advocates and community members to promote dialogue and awareness around this issue.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Happiness",
+      "card_type": "news",
+      "source": "ABC News Australia",
+      "link": "https://www.abc.net.au/news/2026-06-30/nt-residents-happiest-in-australia-flinders-university-study/106860886",
+      "teaser": "A new university study has found that Northern Territory residents report the highest levels of happiness across Australia.",
+      "full_content": "Research from Flinders University shows that Northern Territory residents score highest on measures of wellbeing and happiness compared to other Australian states and territories. The study suggests that factors including proximity to natural environments, warm weather, and cultural diversity may contribute to these outcomes.\n\nThe research surveyed residents across the country, asking questions about life satisfaction and overall wellbeing. The Northern Territory's results stood out significantly when compared with other regions.\n\nThe findings suggest that environment, climate, and community composition all play roles in residents' reported life satisfaction.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Indonesia",
+      "card_type": "longform",
+      "source": "<UNKNOWN>",
+      "link": "<UNKNOWN>",
+      "headline": "<UNKNOWN>",
+      "summary": "<UNKNOWN>"
+    },
+    {
+      "topic": "Innovation",
+      "card_type": "longform",
+      "source": "Aeon",
+      "link": "https://aeon.co/essays/what-we-cant-measure-about-ai-yet",
+      "headline": "Illegible benefits",
+      "summary": "The costs of transformative innovations are immediately clear: it's the longterm gains that are hardest to understand - by Carlo Cordasco"
+    },
+    {
+      "topic": "Nature",
+      "card_type": "longform",
+      "source": "Aeon",
+      "link": "https://aeon.co/essays/it-doesnt-have-to-be-us-versus-nature",
+      "headline": "The measure of flourishing",
+      "summary": "Human prosperity depends on nature, but no global metric has captured this with precision. Enter the Nature Relationship Index - by Yadvinder Malhi"
+    }
+  ],
+  "failures": [
+    "Reuters World News: <urlopen error [Errno -2] Name or service not known>",
+    "ANTARA News Indonesia: <unknown>:31:68: not well-formed (invalid token)",
+    "The Conversation AU: <unknown>:57:57: not well-formed (invalid token)",
+    "Hakai Magazine: no recent entries within recency window"
+  ]
+}
