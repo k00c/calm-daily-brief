@@ -1,0 +1,90 @@
+{
+  "date": "2026-07-02",
+  "generated_at": "2026-07-02T01:28:09.930070+00:00",
+  "stories": [
+    {
+      "topic": "Housing",
+      "card_type": "news",
+      "source": "ABC News Australia",
+      "link": "https://www.abc.net.au/news/2026-07-01/households-facing-heavy-home-loan-interest-burden-kpmg-rba/106864920",
+      "teaser": "Australian households are facing a larger interest burden on mortgages than borrowers did during the 17 per cent interest rate era of the 1980s, according to analysis.",
+      "full_content": "A new analysis comparing housing affordability across generations has found that current borrowers carry a heavier interest rate burden than households did in the high-interest-rate period of the 1980s. The difference lies in mortgage size: Australian mortgages have grown substantially larger, which means that even lower official interest rates translate to substantial total interest payments.\n\nThe comparison measures the proportion of household income consumed by mortgage interest each month. Despite official rates being considerably lower now than in the earlier era, the sheer size of modern mortgages means the overall financial burden on households is greater.\n\nThis finding provides a factual basis for the ongoing generational debate about housing costs and borrowing capacity.",
+      "tag": "relevant"
+    },
+    {
+      "topic": "Entertainment",
+      "card_type": "news",
+      "source": "ABC News Australia",
+      "link": "https://www.abc.net.au/news/2026-07-02/canada-becomes-newest-country-to-join-eurovision-song-contest/106867688",
+      "teaser": "Canada will compete in the Eurovision Song Contest for the first time next year, joining the international music competition as the newest participating country.",
+      "full_content": "Canada has been approved to join the Eurovision Song Contest, marking the first time the country will participate in the annual international song competition. This represents a significant expansion of the contest's geographic reach.\n\nThe decision comes after Canadian performer Céline Dion won Eurovision in 1988 representing Switzerland, where she was competing. Despite this previous connection to the contest, Canada's participation as a competing nation is a new development.\n\nThe announcement expands the roster of countries sending entries to next year's Eurovision event.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Climate",
+      "card_type": "news",
+      "source": "RNZ New Zealand",
+      "link": "https://www.rnz.co.nz/news/environment/651865/el-nin-o-officially-declared-in-new-zealand",
+      "teaser": "Earth Sciences New Zealand has officially declared the onset of an El Niño event, aligning with declarations already made by meteorological services in Australia, Japan, and the United States.",
+      "full_content": "New Zealand's Earth Sciences organisation has confirmed the official declaration of El Niño conditions affecting the region. This follows similar declarations by meteorological counterparts in neighbouring Australia, Japan, and the United States.\n\nEl Niño is a naturally occurring climate pattern that influences weather and ocean conditions across the Pacific region. The declaration marks the formal recognition that the atmospheric and oceanic conditions characteristic of an El Niño event are now present.\n\nThe declaration is part of standard international climate monitoring practices and allows governments and organisations to align their planning and resource management with expected climatic patterns.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Science",
+      "card_type": "news",
+      "source": "RNZ New Zealand",
+      "link": "https://www.rnz.co.nz/news/science-and-technology/651120/what-can-we-learn-from-whale-poo",
+      "teaser": "A molecular ecologist is studying the faeces of southern right whales to gather data that may help protect the species from climate change impacts.",
+      "full_content": "Researchers are using an unconventional but scientifically valuable approach to monitor the health and status of southern right whales: analysing their faeces. A molecular ecologist is leading research that examines the biological and chemical composition of whale droppings.\n\nThis method allows researchers to gather information about the whales' health, diet, and physiological state without the need for invasive sampling or interference with the animals themselves. The data collected contributes to a broader understanding of how these marine mammals are responding to environmental pressures.\n\nThe research is part of a larger effort to understand how climate change and other environmental factors are affecting whale populations, with the goal of developing better conservation strategies.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Defence",
+      "card_type": "news",
+      "source": "ABC News Australia",
+      "link": "https://www.abc.net.au/news/2026-07-01/pat-conroy-to-announce-defence-waste-shake-up/106866558",
+      "teaser": "Defence Industry Minister Pat Conroy is announcing a restructuring of defence spending aimed at reducing wasteful expenditure within the defence sector.",
+      "full_content": "Australia's Defence Industry Minister Pat Conroy is setting out plans to address inefficiencies and cost overruns in defence procurement and operations. The announcement is intended to appeal to Labor supporters and outlines measures designed to eliminate wasteful spending.\n\nThe initiative comes as the government seeks to manage defence budgets while maintaining capability and supporting strategic partnerships such as AUKUS, the trilateral security pact involving Australia, the United Kingdom, and the United States.\n\nThe specific details of the restructure are expected to address identified problem areas in defence program delivery and procurement processes.",
+      "tag": "relevant"
+    },
+    {
+      "topic": "Music",
+      "card_type": "news",
+      "source": "ABC News Australia",
+      "link": "https://www.abc.net.au/news/2026-07-01/victor-willis-village-people-singer-obituary/106867416",
+      "teaser": "Victor Willis, the lead singer and founding member of the Village People disco group, has died at age 74.",
+      "full_content": "Victor Willis, a central figure in one of the most iconic disco groups of the 1970s and 1980s, has passed away at the age of 74. Willis co-founded the Village People and served as the group's lead vocalist throughout their most successful period.\n\nThe Village People became known worldwide for their distinctive musical style and costume-based performances that defined much of the disco era. Willis's tenure with the group coincided with their period of greatest commercial success and cultural impact.\n\nHis contributions to popular music during the disco period established a lasting legacy in entertainment history.",
+      "tag": "awareness"
+    },
+    {
+      "topic": "Playgrounds",
+      "card_type": "longform",
+      "source": "Aeon",
+      "headline": "Noguchi's New York animations",
+      "summary": "Hand-painted animations bring to life Isamu Noguchi's ideas for playgrounds that could integrate art with everyday life",
+      "link": "https://aeon.co/videos/in-noguchis-unrealised-playgrounds-art-and-life-are-inseparable"
+    },
+    {
+      "topic": "Philosophy",
+      "card_type": "longform",
+      "source": "Aeon",
+      "headline": "No one is self-made",
+      "summary": "The idea that success is deserved has great traction in the world. But Zhuangzi argues that it is a deeply flawed notion",
+      "link": "https://aeon.co/essays/zhuangzi-and-the-case-against-meritocracy"
+    },
+    {
+      "topic": "Palaeontology",
+      "card_type": "longform",
+      "source": "Nautilus",
+      "headline": "Inside the Brain of a 319-Million-Year-Old Fossil Fish",
+      "summary": "It paves the way for understanding how ray-finned fishes came to dominate Earth's oceans",
+      "link": "https://nautil.us/inside-the-brain-of-a-319-million-year-old-fossil-fish-1282311/"
+    }
+  ],
+  "failures": [
+    "Reuters World News: <urlopen error [Errno -2] Name or service not known>",
+    "ANTARA News Indonesia: <unknown>:31:68: not well-formed (invalid token)",
+    "The Conversation AU: <unknown>:57:57: not well-formed (invalid token)",
+    "Hakai Magazine: no recent entries within recency window"
+  ]
+}
