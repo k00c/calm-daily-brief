@@ -1,10 +1,11 @@
 name: Daily Calm Brief — Content
 
 on:
-  schedule:
-    # 4pm UTC = midnight AWST (UTC+8) — hours of slack before the audio job
-    # and before the reader wakes, so scheduler delay here is harmless.
-    - cron: "47 16 * * *"
+  # Paused for trial assessment — re-enable the schedule block below to resume.
+  # schedule:
+  #   # 4pm UTC = midnight AWST (UTC+8) — hours of slack before the audio job
+  #   # and before the reader wakes, so scheduler delay here is harmless.
+  #   - cron: "47 16 * * *"
   workflow_dispatch: {}
 
 permissions:
