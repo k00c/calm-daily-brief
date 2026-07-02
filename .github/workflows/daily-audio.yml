@@ -1,9 +1,10 @@
 name: Daily Calm Brief — Audio
 
 on:
-  schedule:
-    # 8:17pm UTC = 4:17am AWST (UTC+8) — off the top-of-hour contention slot.
-    - cron: "17 20 * * *"
+  # Paused for trial assessment — re-enable the schedule block below to resume.
+  # schedule:
+  #   # 8:17pm UTC = 4:17am AWST (UTC+8) — off the top-of-hour contention slot.
+  #   - cron: "17 20 * * *"
   workflow_dispatch: {}
 
 permissions:
